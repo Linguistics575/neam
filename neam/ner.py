@@ -201,7 +201,7 @@ class TEIConverter:
         :rtype: str
         """
         # Brute force regex to find title-looking things
-        text = re.sub('(?:^|\n)(?:((?:\S+ ){1,3}\S+\. ) *\n? *)?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec)(?:\.?|[a-z]+) +(\d+)(?:st|nd|rd|th)?\.?(?: +(\d{4}))?\.?.*)\n', self.format_title, text)
+        text = re.sub('(?:^|\n)(?:((?:\S+ ){1,3}\S+\.) *\n? *)?((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept|Oct|Nov|Dec)(?:\.?|[a-z]+) +(\d+)(?:st|nd|rd|th)?\.?(?: +(\d{4}))?\.?.*)\n', self.format_title, text)
         # Add closing tags where applicable
         text = re.sub('(?<=.|\n)(?=<div)', '</p></div>', text)
 
@@ -209,10 +209,16 @@ class TEIConverter:
         return '<body>{}</p></div></body>'.format(text)
 
     def format_title(self, matchobj):
-        title = (matchobj.group(1) or '') + matchobj.group(2)
+        title = matchobj.group(1)
         month = Month[matchobj.group(3)].value + 1
         day = matchobj.group(4)
         year = matchobj.group(5)
+
+        if title:
+            title += ' '
+        else:
+            title = ''
+        title += matchobj.group(2)
 
         if year:
             self.year = year
