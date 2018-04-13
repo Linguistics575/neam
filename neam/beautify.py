@@ -17,7 +17,9 @@ The string to use for indentation
 """
 TAB = '  '
 
-
+"""
+The tags that should not be formatted
+"""
 IGNORE_TAGS = ['p']
 
 
