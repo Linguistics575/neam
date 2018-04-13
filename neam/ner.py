@@ -9,15 +9,11 @@ output to a tagged string.
 """
 import sys
 import re
+import json
+import os
 from enum import Enum
 from nltk.tag import StanfordNERTagger
 from nltk.tokenize import word_tokenize
-
-""" The location of the trained model file """
-CLASSIFICATION_MODEL = '/home2/vwr/tmp/ling575g/stanford_models/edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz'
-
-""" The location of the .jar file for the NER tagger """
-TAGGER_JAR = '/NLP_TOOLS/tool_sets/stanford-corenlp/latest/stanford-corenlp-3.7.0.jar'
 
 PAGE_PATTERN = re.compile('^Page \d+')
 
@@ -30,7 +26,9 @@ TAG_DICT = {
 
 def main():
     file_name = sys.argv[1]
-    tagger = StanfordNERTagger(CLASSIFICATION_MODEL, TAGGER_JAR)
+    config = load_config()
+
+    tagger = StanfordNERTagger(config["model"], config["jar"])
     converter = TEIConverter(TAG_DICT)
 
     with open(file_name) as journal:
@@ -45,6 +43,22 @@ def main():
             converter.feed(tagged)
 
     print(converter.to_s())
+
+
+def load_config():
+    config_path = os.path.join(os.path.dirname(__file__), '../config.json')
+
+    try:
+        with open(config_path) as config_file:
+            config = json.load(config_file)
+    except FileNotFoundError:
+        print('Could not load config - have you set config.json?')
+        sys.exit(1)
+    except json.decoder.JSONDecodeError:
+        print('config.json is not valid JSON!')
+        sys.exit(1)
+
+    return config
 
 
 class Month(Enum):
