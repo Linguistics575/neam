@@ -1,2 +1,2 @@
 #!/bin/sh
-src/ner.py $1 | src/beautify.py
+neam/ner.py $1 | neam/beautify.py
