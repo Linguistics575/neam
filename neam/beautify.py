@@ -18,24 +18,7 @@ The string to use for indentation
 TAB = '  '
 
 
-def main():
-    body = load_soup()
-    builder = []
-
-    builder.append(open_tag(body))
-
-    for div in body.find_all('div'):
-        print(TAB + open_tag(div))
-
-        # The <P> tags should not receive any special formatting; just print them directly
-        for p in div.find_all('p'):
-            builder.append(TAB*2 + str(p))
-
-        builder.append(TAB + close_tag(div))
-
-    builder.append(close_tag(body))
-
-    print('\n'.join(builder))
+IGNORE_TAGS = ['p']
 
 
 def load_soup():
@@ -56,6 +39,28 @@ def load_soup():
     return soup.body
 
 
+def recursive_print(soup, depth = 0):
+    """
+    Prints a BeautifulSoup tag recursively
+
+    If the tag is in the IGNORE_TAGS list, it will be printed out without formatting.
+
+    :param soup: A BeautifulSoup tag
+    :param depth: The current indentation depth
+    """
+    indent = TAB * depth
+
+    if soup.name in IGNORE_TAGS:
+        print(indent + str(soup))
+    else:
+        print(indent + open_tag(soup))
+
+        for child in soup.children:
+            recursive_print(child, depth + 1)
+
+        print(indent + close_tag(soup))
+
+
 def open_tag(tag):
     """
     Generates an opening tag string for a given tag
@@ -64,8 +69,10 @@ def open_tag(tag):
     :return: The string that would open the tag, including any attributes
     :rtype: str
     """
-    attrs = ['{}="{}"'.format(id, value) for id, value in tag.attrs.items()]
-    return '<{} {}>'.format(tag.name, ' '.join(attrs))
+    attrs = ' '.join(['{}="{}"'.format(id, value) for id, value in tag.attrs.items()])
+    if attrs: attrs = ' ' + attrs
+
+    return '<{}{}>'.format(tag.name, attrs)
 
 
 def close_tag(tag):
@@ -78,4 +85,5 @@ def close_tag(tag):
     return '</{}>'.format(tag.name)
 
 
-main()
+if __name__ == '__main__':
+    recursive_print(load_soup())
