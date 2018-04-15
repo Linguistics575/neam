@@ -44,7 +44,7 @@ def main():
     name = sys.argv[1]
 
     if isfile(name):
-        print(parse(name))
+        print_sequence(parse(name))
     elif isdir(name):
         listing = [join(name, f) for f in listdir(name)]
         parses = [parse(f) for f in listing if isfile(f)]
@@ -71,7 +71,7 @@ def parse(file_name):
     for el in soup.find_all(DECOMPOSABLE):
         el.decompose()
 
-    return '\n'.join(tag_elements(soup.find_all(TEXT_TAGS)))
+    return tag_elements(soup.find_all(TEXT_TAGS))
 
 
 def tag_elements(els):
@@ -92,7 +92,7 @@ def tag_elements(els):
                     tag = segment[TYPE_ATTR]
                 segment = segment.string
 
-            tagged += tag_sequence(segment, tag)
+            tagged.extend(tag_sequence(segment, tag))
 
     return tagged
 
@@ -103,10 +103,20 @@ def tag_sequence(sequence, tag):
 
     :type sequence: str
     :type tag: str
-    :return: A list of strings, which are tab-separated words and NE tag pairs
+    :return: A list of tuples consisting of the token and the tag
     """
     tokens = word_tokenize(sequence, tag != OUTSIDE_TAG)
-    return ["{}\t{}".format(token, tag) for token in tokens]
+    return [(token, tag) for token in tokens]
+
+
+def print_sequence(sequence):
+    """
+    Prints a tagged sequence to stdout
+
+    :type sequence: list of tuple of str
+    """
+    for item in sequence:
+        print("{}\t{}".format(item[0], item[1]))
 
 
 def word_tokenize(sequence, ne = False):
