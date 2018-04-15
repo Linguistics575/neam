@@ -39,6 +39,8 @@ OUTSIDE_TAG = 'O'
 """ The attribute that holds the type of NER """
 TYPE_ATTR = 'type'
 
+ABBREVIATIONS = ['mr', 'ms', 'mrs', 'dr', 'col', 'lt', 'gen', 'maj']
+
 
 def main():
     name = sys.argv[1]
@@ -49,7 +51,7 @@ def main():
         listing = [join(name, f) for f in listdir(name)]
         parses = [parse(f) for f in listing if isfile(f)]
         for p in parses:
-            print(p)
+            print_sequence(p)
     else:
         print('Error: {} is not the name of a file or directory.'.format(name),
                 file=sys.stderr)
@@ -71,7 +73,11 @@ def parse(file_name):
     for el in soup.find_all(DECOMPOSABLE):
         el.decompose()
 
-    return tag_elements(soup.find_all(TEXT_TAGS))
+    sequence = tag_elements(soup.find_all(TEXT_TAGS))
+
+    clean_up_abbreviations(sequence)
+
+    return sequence
 
 
 def tag_elements(els):
@@ -106,7 +112,7 @@ def tag_sequence(sequence, tag):
     :return: A list of tuples consisting of the token and the tag
     """
     tokens = word_tokenize(sequence, tag != OUTSIDE_TAG)
-    return [(token, tag) for token in tokens]
+    return [[token, tag] for token in tokens]
 
 
 def print_sequence(sequence):
@@ -142,6 +148,27 @@ def word_tokenize(sequence, ne = False):
             tokens[-2:] = [''.join(tokens[-2:])]
 
     return tokens
+
+
+def clean_up_abbreviations(sequence):
+    i = 0
+    abbreviations = [abv + '.' for abv in ABBREVIATIONS]
+
+    # Glue stray periods back on
+    while i < len(sequence) - 2:
+        if sequence[i][0].lower() in ABBREVIATIONS and sequence[i+1][0] == '.':
+            sequence[i:i+2] = [[sequence[i][0] + '.', sequence[i+2][1]]] 
+        i += 1
+
+    # Retag abbreviations
+    for i in range(len(sequence)):
+        word, tag = sequence[i]
+        if word.lower() in abbreviations:
+            j = i+1
+            while sequence[j][0].lower() in abbreviations and sequence[j][1] != OUTSIDE_TAG:
+                j += 1
+            for item in sequence[i:j]:
+                item[1] = sequence[j][1]
 
 
 if __name__ == '__main__':
