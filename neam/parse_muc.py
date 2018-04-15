@@ -129,8 +129,7 @@ def word_tokenize(sequence, ne = False):
         tokens = _word_tokenize(sequence)
 
         if ne and tokens[-1] == '.':
-            tokens[-2] += '.'
-            tokens = tokens[:-1]
+            tokens[-2:] = [''.join(tokens[-2:])]
 
     return tokens
 
