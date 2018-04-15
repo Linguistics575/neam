@@ -71,7 +71,13 @@ def parse(file_name):
     for el in soup.find_all(DECOMPOSABLE):
         el.decompose()
 
-    return tag_elements(soup.find_all(TEXT_TAGS))
+    sequence = tag_elements(soup.find_all(TEXT_TAGS))
+
+    for i in range(len(sequence) - 2):
+        if sequence[i][0].lower() in ['gen'] and sequence[i+1][0] == '.':
+            sequence[i:i+1] = [(''.join(sequence[i:i+1]), sequence[i+2])] 
+
+    print_sequence(sequence)
 
 
 def tag_elements(els):
