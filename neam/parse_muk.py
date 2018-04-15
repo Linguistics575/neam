@@ -48,8 +48,8 @@ def main():
     elif isdir(name):
         listing = [join(name, f) for f in listdir(name)]
         parses = [parse(f) for f in listing if isfile(f)]
-        for parse in parses:
-            print(parse)
+        for p in parses:
+            print(p)
     else:
         print('Error: {} is not the name of a file or directory.'.format(name),
                 file=sys.stderr)
