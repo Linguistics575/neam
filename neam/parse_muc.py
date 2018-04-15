@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """
-parse_muk.py
+parse_muc.py
 
-Takes a named entity-tagged MUK corpus and converts it to a format that can be used to
-train the Stanford NER. Acceptable inputs are either the name of a file containing a MUK
-corpus, or the name of a folder containing only MUK tagged corpus files.
+Takes a named entity-tagged MUC corpus and converts it to a format that can be used to
+train the Stanford NER. Acceptable inputs are either the name of a file containing a MUC
+corpus, or the name of a folder containing only MUC tagged corpus files.
 
 :author: Graham Still
 """
@@ -62,8 +62,8 @@ def parse(file_name):
     :type file_name: str
     :return: A string of tab-separated token/entity tag lines
     """
-    with open(file_name) as muk_file:
-        soup = BeautifulSoup(muk_file, BS4_PARSER)
+    with open(file_name) as muc_file:
+        soup = BeautifulSoup(muc_file, BS4_PARSER)
 
     for el in soup.find_all(UNWRAPPABLE):
         el.unwrap()
