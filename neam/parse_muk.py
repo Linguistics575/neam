@@ -88,7 +88,7 @@ def tag_elements(els):
             tag = OUTSIDE_TAG
 
             if not isinstance(segment, str):
-                if segment[TYPE_ATTR] in TAGS_OF_INTEREST:
+                if TYPE_ATTR in segment and segment[TYPE_ATTR] in TAGS_OF_INTEREST:
                     tag = segment[TYPE_ATTR]
                 segment = segment.string
 
@@ -123,11 +123,14 @@ def word_tokenize(sequence, ne = False):
     :type ne: bool
     :return: A list of tokens
     """
-    tokens = _word_tokenize(sequence)
+    tokens = []
 
-    if ne and tokens[-1] == '.':
-        tokens[-2] += '.'
-        tokens = tokens[:-1]
+    if sequence:
+        tokens = _word_tokenize(sequence)
+
+        if ne and tokens[-1] == '.':
+            tokens[-2] += '.'
+            tokens = tokens[:-1]
 
     return tokens
 
