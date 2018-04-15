@@ -88,7 +88,7 @@ def tag_elements(els):
             tag = OUTSIDE_TAG
 
             if not isinstance(segment, str):
-                if TYPE_ATTR in segment and segment[TYPE_ATTR] in TAGS_OF_INTEREST:
+                if segment.name == NER_TAG and segment[TYPE_ATTR] in TAGS_OF_INTEREST:
                     tag = segment[TYPE_ATTR]
                 segment = segment.string
 
