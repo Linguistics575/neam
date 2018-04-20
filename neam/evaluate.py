@@ -1,11 +1,19 @@
 #!/usr/bin/python3
+"""
+evaluate.py
+
+Evaluates a set of tagged data against a gold standard. Provides both MUC and CoNLL-style
+calculates of precision, recall, and f-measure.
+
+:author: Sunny Woldenga-Racine
+"""
 from bs4 import BeautifulSoup
 import re
 import sys
 
 
 # the tags we want to evaluate and keep in the gold standard
-KEEP_TAGS = ['<persname>', '</persname>', '<placename>', '</placename>']
+KEEP_TAGS = ['<persname>', '</persname>', '<placename>', '</placename>', '<orgname>', '</orgname>']
 
 
 def clean_gold(soup):
@@ -19,8 +27,11 @@ def clean_gold(soup):
     # convert to string
     str_soup = str(soup)
     # remove material inside desired tag after tag name
-    str_soup = re.sub(r'<persname.+?>', '<persname>', str_soup)
-    str_soup = re.sub(r'<placename.+?>', '<placename>', str_soup)
+    str_soup = re.sub(r'<persname.+?>\s*', '<persname>', str_soup)
+    str_soup = re.sub(r'<placename.+?>\s*', '<placename>', str_soup)
+    str_soup = re.sub(r'<orgname.+?>\s*', '<orgname>', str_soup)
+    # turn page breaks into line breaks
+    str_soup = re.sub(r'<pb.+?>', '\n', str_soup)
     # get the tags present in the text
     tags = set(re.findall(r'</?.+?>', str_soup))
     # remove tags which we do not want to keep
@@ -42,6 +53,14 @@ def clean_test(soup):
     """
     # get a string representation
     str_soup = ''.join([str(x) for x in soup.contents])
+    # remove the BOM char which literally no one likes
+    str_soup = str_soup.replace('\ufeff', '')
+    # get the tags present in the text
+    tags = set(re.findall(r'</?.+?>', str_soup))
+    # remove tags which we do not want to keep
+    for tag in tags:
+        if tag not in KEEP_TAGS:
+            str_soup = re.sub(tag, '', str_soup)
     # remove page information
     str_soup = re.sub(r'PAGE \d+', '', str_soup)
     # strip punctuation
@@ -52,11 +71,12 @@ def clean_test(soup):
 def strip_punct(text):
     """
     Strips punctuation except for '/', '<', and '>', which are used in XML tags.
+    This includes curly quotes.
     :param text: text to be stripped
     :type text: string
     :return: stripped text
     """
-    punct = re.compile('[%s]' % re.escape('!"#$%&\'()*+,-.:;=?@[\\]^_`{|}~'))
+    punct = re.compile('[%s]' % re.escape('!"#$%&\'()*+,-.:;=?@[\\]^_`{|}~’‘'))
     stripped_text = punct.sub('', text)
     return stripped_text
 
@@ -74,28 +94,40 @@ def tokenize(text):
 
 def check(test, gold):
     """
-    Checks whether the number of tokens in the test and gold data are equal.
-    If not, prints the first instance of a difference between the two lists
-    for debugging purposes. If they are not the same length then this means
-    I am doing something wrong in the cleaning of the two texts and it needs
-    to be fixed.
+    Checks whether all tokens (once tags have been removed) are identical
+    and whether each set has the same number of tokens. If tokens are
+    different, it prints the first pair of tokens which do not match. If
+    one of the lists is longer, it prints the extra tokens. If either of
+    these things happens it means there is likely a bug in how I am
+    cleaning or tokenizing the data.
+    it.
     :param test: list of tokens in the test data
     :param gold: list of tokens in the gold standard data
     :return: whether the lists are the same length
     """
-    if len(test) == len(gold):
-        return True
+    for i, t in enumerate(test):
+        # avoid IndexError when indexing gold
+        if i < len(gold):
+            t1 = re.sub(r'</?\w+>', '', t)
+            t2 = re.sub(r'</?\w+>', '', gold[i])
+            # if the tokens are different
+            if t1 != t2:
+                print('Difference: \'{}\' vs \'{}\''.format(t1, t2))
+                print('Context test = {} {} {} {} {}'.format(test[i-2], test[i-1], test[i], test[i+1], test[i+2]))
+                print('Context gold = {} {} {} {} {}'.format(gold[i-2], gold[i-1], gold[i], gold[i+1], gold[i+2]))
+                return False
+    if len(test) > len(gold):
+        print('Test has more tokens than gold. Extra:')
+        for i in range(len(gold) - 1, len(test)):
+            print(test[i])
+        return False
+    elif len(gold) > len(test):
+        print('Gold has more tokens than test. Extra:')
+        for i in range(len(test) - 1, len(gold)):
+            print(test[i])
+        return False
     else:
-        try:
-            for i, t in enumerate(test):
-                t1 = re.sub(r'</?w+>', '', t)
-                t2 = re.sub(r'</?w+>', '', gold[i])
-                # if the tokens are different
-                if t1 != t2:
-                    print('Difference: {} vs {}', t1, t2)
-                    return False
-        except IndexError:
-            print('Warning: test token list too long.')
+        return True
 
 
 def conll_eval(test, gold):
