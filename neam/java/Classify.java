@@ -7,7 +7,24 @@ import java.io.*;
 
 public class Classify {
 
-    public static String OUTSIDE_TAG = "O";
+    /**
+     * Maps Stanford tags to TEI tags
+     */
+    public static final Map<String, String> tagMap;
+
+    // Initialize the tag map. Why doesn't Java have hash literals? Who knows.
+    static {
+        tagMap = new HashMap<String, String>();
+        String[][] pairs = {
+            { "PERSON", "persName" },
+            { "LOCATION", "placeName" },
+            { "ORGANIZATION", "orgName" }
+        };
+
+        for (String[] pair : pairs) {
+            tagMap.put(pair[0], pair[1]);
+        }
+    }
 
     public static void main(String[] args) {
         String fileName = args[0];
@@ -17,12 +34,39 @@ public class Classify {
         Annotation document = initDocument(fileName);
 
         pipeline.annotate(document);
-        tagDocument(document);
+        String tagged = tagDocument(document);
+
+        // Not bothering with the title right now. Let's just say it's all one entry,
+        // and there is no title.
+        tagged = wrap(tagged, "p");
+        tagged = wrap(tagged, "div");
+
+        System.out.println(wrap(tagged, "body"));
     }
 
+    /**
+     * Sets up the StanfordCoreNLP pipeline.
+     *
+     * Any changes to CoreNLP should be effected here.
+     *
+     * @param model A file name for a NER model to use, or null to use the default one
+     * @return A StanfordCoreNLP pipeline
+     */
     public static StanfordCoreNLP initPipeline(String model) {
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner");
+
+        // These are the annotators the pipeline should use. The NER annotator is of the
+        // most interest, and it requires the preceeding annotators in order to work.
+        // The EntityMentions annotator chunks named entities together.
+        props.setProperty(
+                "annotators",
+                "tokenize, ssplit, pos, lemma, ner, entitymentions"
+        );
+
+        // Properties for specific annotators can be set here.
+        
+        // The NER annotator comes with a classifier for numerals - not useful for us.
+        props.setProperty("ner.applyNumericClassifiers", "false");
 
         if (model != null) {
             props.setProperty("ner.model", model);
@@ -31,6 +75,12 @@ public class Classify {
         return new StanfordCoreNLP(props);
     }
 
+    /**
+     * Loads in a document to annotate.
+     *
+     * @param fileName The name of the file to load in
+     * @return A CoreNLP Annotation, ready to be run through a pipeline
+     */
     public static Annotation initDocument(String fileName) {
         StringBuilder builder = new StringBuilder();
         String line;
@@ -50,38 +100,59 @@ public class Classify {
         return new Annotation(builder.toString());
     }
 
-    public static void tagDocument(Annotation document) {
-        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-        String prevTag = OUTSIDE_TAG;
-        String word;
-        String currentTag;
+    /**
+     * Applies the annotations made to a document to the document itself.
+     *
+     * The document needs to have been already run through a pipeline.
+     *
+     * @param document The annotated document
+     * @return The text of the document, with the named entites tagged in XML
+     */
+    public static String tagDocument(Annotation document) {
+        List<CoreMap> namedEntities = document.get(MentionsAnnotation.class);
+        int lastPos = -1;
+        int nextPos;
+        String text = document.toString();
+        String tag, phrase;
+        StringBuilder builder = new StringBuilder();
 
-        for (CoreMap sentence : sentences) {
-            for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-                word = token.get(TextAnnotation.class);
-                currentTag = token.get(NamedEntityTagAnnotation.class);
+        for (CoreMap namedEntity : namedEntities) {
+            tag = namedEntity.get(NamedEntityTagAnnotation.class);
+            phrase = namedEntity.toString();
 
-                if (!currentTag.equals(prevTag) && !prevTag.equals(OUTSIDE_TAG)) {
-                    System.out.println(closeTag(prevTag));
-                }
+            if (tagMap.containsKey(tag)) {
+                tag = tagMap.get(tag);
+            }
 
-                if (!currentTag.equals(prevTag) && !currentTag.equals(OUTSIDE_TAG)) {
-                    System.out.println(openTag(currentTag));
-                }
+            // Find the location of the current phrase in the document
+            nextPos = text.indexOf(phrase, lastPos);
 
-                System.out.println(word);
+            // For some reason, the annotator will tag things that aren't in the text
+            // sometimes. This check makes sure that it really is tagging something
+            // in the text.
+            if (nextPos > 0) {
+                // Append the text between the previous entity and the current entity
+                builder.append(text.substring(lastPos + 1, nextPos));
 
-                prevTag = currentTag;
+                // Append the new named entity
+                builder.append(wrap(phrase, tag));
+
+                lastPos = nextPos + phrase.length() - 1;
             }
         }
+
+        return builder.toString();
     }
 
-    public static String openTag(String name) {
-        return '<' + name + '>';
-    }
-
-    public static String closeTag(String name) {
-        return "</" + name + '>';
+    /**
+     * Wraps a string inside a set of tags.
+     *
+     * @param content The string to wrap
+     * @param tag     The tag to wrap the content in
+     * @return The content wrapped inside the tag
+     */
+    public static String wrap(String content, String tag) {
+        return String.format("<%s>%s</%s>", tag, content, tag);
     }
 }
 

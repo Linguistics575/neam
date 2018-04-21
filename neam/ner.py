@@ -12,10 +12,7 @@ import re
 import json
 import os
 from enum import Enum
-from nltk.tag import StanfordNERTagger
-from nltk.tokenize import word_tokenize
-
-PAGE_PATTERN = re.compile('^Page \d+', re.I)
+import subprocess
 
 """ Correspondences between Stanford tags and TEI tags """
 TAG_DICT = {
@@ -27,23 +24,23 @@ TAG_DICT = {
 
 def main():
     file_name = sys.argv[1]
-    config = load_config()
+    output = subprocess.run(['java/run', file_name], stdout=subprocess.PIPE)
+    print(output)
 
-    tagger = StanfordNERTagger(config["model"], config["jar"])
-    converter = TEIConverter(TAG_DICT)
+    #converter = TEIConverter(TAG_DICT)
 
-    with open(file_name) as journal:
-        for line in journal:
+    #with open(file_name) as journal:
+        #for line in journal:
             # Let's say for now that page numbers are being excluded. In Journal 2, for example,
             # page 1 is excluded, but other pages are embedded in the text - pretty ugly.
-            if PAGE_PATTERN.match(line):
-                continue
+            #if PAGE_PATTERN.match(line):
+            #    continue
 
-            tokens = word_tokenize(line)
-            tagged = tagger.tag(tokens)
-            converter.feed(tagged)
+            #tokens = word_tokenize(line)
+            #tagged = tagger.tag(tokens)
+            #converter.feed(tagged)
 
-    print(converter.to_s())
+    #print(converter.to_s())
 
 
 def load_config():
