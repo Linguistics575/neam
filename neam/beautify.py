@@ -58,7 +58,8 @@ def recursive_print(soup, depth = 0):
         print(indent + open_tag(soup))
 
         for child in soup.children:
-            recursive_print(child, depth + 1)
+            if not isinstance(child, str):
+                recursive_print(child, depth + 1)
 
         print(indent + close_tag(soup))
 

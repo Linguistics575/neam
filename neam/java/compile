@@ -1,2 +1,4 @@
 #!/bin/sh
-/opt/jdk8/bin/javac Classify.java
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+/opt/jdk8/bin/javac "$DIR/Classify.java"

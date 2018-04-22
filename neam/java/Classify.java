@@ -36,12 +36,7 @@ public class Classify {
         pipeline.annotate(document);
         String tagged = tagDocument(document);
 
-        // Not bothering with the title right now. Let's just say it's all one entry,
-        // and there is no title.
-        tagged = wrap(tagged, "p");
-        tagged = wrap(tagged, "div");
-
-        System.out.println(wrap(tagged, "body"));
+        System.out.println(tagged);
     }
 
     /**
@@ -67,6 +62,7 @@ public class Classify {
         
         // The NER annotator comes with a classifier for numerals - not useful for us.
         props.setProperty("ner.applyNumericClassifiers", "false");
+        props.setProperty("tokenize.keepeol", "true");
 
         if (model != null) {
             props.setProperty("ner.model", model);
@@ -90,7 +86,7 @@ public class Classify {
             reader = new BufferedReader(new FileReader(fileName));
 
             while ((line = reader.readLine()) != null) {
-                builder.append(line).append(' ');
+                builder.append(line).append('\n');
             }
         } catch (IOException e) {
             System.err.println("Could not open " + fileName);
