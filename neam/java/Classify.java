@@ -64,7 +64,7 @@ public class Classify {
         props.setProperty("ner.applyNumericClassifiers", "false");
         props.setProperty("tokenize.keepeol", "true");
 
-        if (model != null) {
+        if (model != null && model.length() > 0) {
             props.setProperty("ner.model", model);
         }
 
