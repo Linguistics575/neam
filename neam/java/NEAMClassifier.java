@@ -59,6 +59,7 @@ class NEAMClassifier {
         String text = document.toString();
         String tag, phrase;
         StringBuilder builder = new StringBuilder();
+        Collection<Object> acceptableTags = tags.values();
 
         for (CoreMap namedEntity : namedEntities) {
             tag = namedEntity.get(NamedEntityTagAnnotation.class);
@@ -77,11 +78,13 @@ class NEAMClassifier {
             if (nextPos > 0) {
                 // Append the text between the previous entity and the current entity
                 builder.append(text.substring(lastPos + 1, nextPos));
+                lastPos = nextPos + phrase.length() - 1;
 
                 // Append the new named entity
-                builder.append(wrap(phrase, tag));
-
-                lastPos = nextPos + phrase.length() - 1;
+                if (acceptableTags.contains(tag)) {
+                    phrase = wrap(phrase, tag);
+                }
+                builder.append(phrase);
             }
         }
 
