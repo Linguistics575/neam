@@ -12,6 +12,11 @@ public class Classify {
      */
     public static final Map<String, String> tagMap;
 
+    /**
+     * The file where the Stanford CoreNLP properties are located
+     */
+    public static final String PROPERTY_FILE = "ner.prop";
+
     // Initialize the tag map. Why doesn't Java have hash literals? Who knows.
     static {
         tagMap = new HashMap<String, String>();
@@ -50,25 +55,31 @@ public class Classify {
     public static StanfordCoreNLP initPipeline(String model) {
         Properties props = new Properties();
 
-        // These are the annotators the pipeline should use. The NER annotator is of the
-        // most interest, and it requires the preceeding annotators in order to work.
-        // The EntityMentions annotator chunks named entities together.
-        props.setProperty(
-                "annotators",
-                "tokenize, ssplit, pos, lemma, ner, entitymentions"
-        );
-
-        // Properties for specific annotators can be set here.
-        
-        // The NER annotator comes with a classifier for numerals - not useful for us.
-        props.setProperty("ner.applyNumericClassifiers", "false");
-        props.setProperty("tokenize.keepeol", "true");
+        loadProperties(props, PROPERTY_FILE);
 
         if (model != null && model.length() > 0) {
             props.setProperty("ner.model", model);
         }
 
         return new StanfordCoreNLP(props);
+    }
+
+    /**
+     * Loads properties from a file into a CoreNLP Properties object.
+     *
+     * @param props    The properties object to populate
+     * @param fileName The name of the file to load from
+     */
+    private static void loadProperties(Properties props, String fileName) {
+        try {
+            BufferedReader propertyFile = new BufferedReader(new FileReader(fileName));
+
+            props.load(propertyFile);
+
+            propertyFile.close();
+        } catch (IOException e) {
+            System.err.println("Could not open properties file.");
+        }
     }
 
     /**
@@ -88,6 +99,8 @@ public class Classify {
             while ((line = reader.readLine()) != null) {
                 builder.append(line).append('\n');
             }
+
+            reader.close();
         } catch (IOException e) {
             System.err.println("Could not open " + fileName);
         }
