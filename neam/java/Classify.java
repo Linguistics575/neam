@@ -137,6 +137,9 @@ public class Classify {
             }
         }
 
+        // Add the stuff between the last NE and the end of the document
+        builder.append(text.substring(lastPos + 1));
+
         return builder.toString();
     }
 
