@@ -10,6 +10,8 @@ public class Classify {
      */
     public static final String PROPERTY_FILE = "ner.prop";
 
+    public static final String TAG_FILE = "tags.prop";
+
     public static void main(String[] args) {
         // The name of the file to classify
         String fileName = args[0];
@@ -18,39 +20,21 @@ public class Classify {
         String model = args.length > 1 ? args[1] : null;
 
         // Generate the properties
-        Properties props = initProperties(PROPERTY_FILE);
+        NEAMDict props = new NEAMDict();
+        props.loadFile(PROPERTY_FILE);
         if (model != null && model.length() > 0) {
             props.setProperty("ner.model", model);
         }
 
-        // Classify the document
+        // Generate the classifier
         NEAMClassifier classifier = new NEAMClassifier(props);
+        classifier.tags.loadFile(TAG_FILE);
+
+        // Classify the document
         String tagged = classifier.classify(fileName);
 
         // Dump the output
         System.out.println(tagged);
-    }
-
-    /**
-     * Loads properties from a file into a Properties object.
-     *
-     * @param props    The properties object to populate
-     * @param fileName The name of the file to load from
-     */
-    private static Properties initProperties(String fileName) {
-        Properties props = new Properties();
-
-        try {
-            BufferedReader propertyFile = new BufferedReader(new FileReader(fileName));
-
-            props.load(propertyFile);
-
-            propertyFile.close();
-        } catch (IOException e) {
-            System.err.println("Could not open properties file.");
-        }
-
-        return props;
     }
 }
 

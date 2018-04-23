@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.*;
 
 /**
  * Contains static NEAM utility methods
@@ -8,22 +7,6 @@ public final class Util {
 
     private Util() {
         throw new RuntimeException("Util is a static class and cannot be instantiated.");
-    }
-
-    /**
-     * Generates a HashMap using an array of String pairs.
-     *
-     * @param arr The array to generate from
-     * @return An equivalent HashMap
-     */
-    public static Map<String, String> mapArray(String[][] arr) {
-        HashMap<String, String> map = new HashMap<>();
-
-        for (String[] pair : arr) {
-            map.put(pair[0], pair[1]);
-        }
-
-        return map;
     }
 
     /**

@@ -12,21 +12,16 @@ import java.util.*;
  * classify that file.
  */
 class NEAMClassifier {
-    /**
-     * Map of Stanford tags to TEI tags
-     */
-    private static final Map<String, String> tagMap = Util.mapArray(
-            new String[][] {
-                { "PERSON", "persName" },
-                { "LOCATION", "placeName" },
-                { "ORGANIZATION", "orgName" }
-            }
-    );
 
     /**
      * The CoreNLP pipeline to use to classify incoming text
      */
     private StanfordCoreNLP pipeline;
+
+    /**
+     * Map of Stanford tags to TEI tags
+     */
+    public final NEAMDict tags = new NEAMDict();
 
     /**
      * Initializes the classifier.
@@ -69,8 +64,8 @@ class NEAMClassifier {
             tag = namedEntity.get(NamedEntityTagAnnotation.class);
             phrase = namedEntity.toString();
 
-            if (tagMap.containsKey(tag)) {
-                tag = tagMap.get(tag);
+            if (tags.containsKey(tag)) {
+                tag = tags.get(tag);
             }
 
             // Find the location of the current phrase in the document
