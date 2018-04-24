@@ -1,4 +1,4 @@
 #!/bin/sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-/opt/jdk8/bin/java -Xmx4G -cp "$DIR:$CLASSPATH" Classify "$@"
+java -Xmx4G -cp "$DIR:$CLASSPATH" Classify "$@"
