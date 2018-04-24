@@ -1,2 +1,3 @@
 #!/bin/sh
-python3 neam/evaluate.py $1 $2
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+python3 "$DIR/neam/evaluate.py" $1 $2
