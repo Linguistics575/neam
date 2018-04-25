@@ -8,3 +8,6 @@ ner.applyNumericClassifiers = false
 # Don't throw away newlines, because they're useful for figuring out where the titles
 # are.
 tokenize.keepeol = true
+
+# Output should have ' and ", not anything else
+tokenize.options = asciiQuotes
