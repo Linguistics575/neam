@@ -29,8 +29,12 @@ public class Classify {
         // Classify the document
         String tagged = classifier.classify(fileName);
 
-        // Dump the output
         System.out.println(tagged);
+        // Dump the output
+        // try {
+        //     new PrintStream(System.out, true, "UTF-8").println(tagged);
+        // } catch (UnsupportedEncodingException e) {
+        // }
     }
 }
 

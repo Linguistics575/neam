@@ -90,7 +90,7 @@ def fix_spacing(text):
     text = re.sub('\n', ' ', text)
     text = re.sub('(<[^/>]*>) +', '\g<1>', text)
     text = re.sub(' +(?=</)', '', text)
-    return re.sub(' {2,}', ' ', text)
+    return re.sub('(?<= ) ', '', text)
 
 
 if __name__ == '__main__':

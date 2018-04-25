@@ -5,6 +5,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PROPERTY_FILE="$DIR/ner.prop"
 TAG_FILE="$DIR/tags.prop"
+TEMP_FILE="temp.txt"
 
-"$DIR/neam/java/run" "$1" $PROPERTY_FILE $TAG_FILE "$2" | "$DIR/neam/postprocess.py" | "$DIR/neam/beautify.py"
+PYTHONIOENCODING=utf-8 "$DIR/neam/preprocess.py" $1 > "$TEMP_FILE"
+
+"$DIR/neam/java/run" "$TEMP_FILE" $PROPERTY_FILE $TAG_FILE "$2" | "$DIR/neam/postprocess.py" | "$DIR/neam/beautify.py"
+
+rm -f "$TEMP_FILE"
 

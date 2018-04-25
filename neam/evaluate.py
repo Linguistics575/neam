@@ -76,7 +76,7 @@ def strip_punct(text):
     :type text: string
     :return: stripped text
     """
-    punct = re.compile('[%s]' % re.escape('!"#$%&\'()*+,-.:;=?@[\\]^_`{|}~’‘'))
+    punct = re.compile('[%s]' % re.escape('!"#$%&\'()*+,-.:;=?@[\\]^_`{|}~\u2018\u2019'))
     stripped_text = punct.sub('', text)
     return stripped_text
 
@@ -112,6 +112,8 @@ def check(test, gold):
             t2 = re.sub(r'</?\w+>', '', gold[i])
             # if the tokens are different
             if t1 != t2:
+                for char in t1:
+                    print(ord(char))
                 print('Difference: \'{}\' vs \'{}\''.format(t1, t2))
                 print('Context test = {} {} {} {} {}'.format(test[i-2], test[i-1], test[i], test[i+1], test[i+2]))
                 print('Context gold = {} {} {} {} {}'.format(gold[i-2], gold[i-1], gold[i], gold[i+1], gold[i+2]))
@@ -265,10 +267,10 @@ def main():
         print('Command line arguments needed: file to be tested, gold standard file')
         sys.exit(1)
     # make soup for test
-    with open(testfile, 'r') as tf:
+    with open(testfile, 'r', encoding='utf-8', errors="surrogateescape") as tf:
         test = BeautifulSoup(tf, 'html.parser')
     # make soup for gold
-    with open(goldfile, 'r') as gf:
+    with open(goldfile, 'r', encoding='utf-8', errors="surrogateescape") as gf:
         gold = BeautifulSoup(gf, 'html.parser')
     # clean and tokenize the data
     test = tokenize(clean_test(test.body))

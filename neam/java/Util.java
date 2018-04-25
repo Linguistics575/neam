@@ -21,7 +21,7 @@ public final class Util {
         BufferedReader reader;
 
         try {
-            reader = new BufferedReader(new FileReader(fileName));
+            reader = new BufferedReader(new InputStreamReader(new FileReader(fileName), "UTF8"));
 
             while ((line = reader.readLine()) != null) {
                 builder.append(line).append('\n');
