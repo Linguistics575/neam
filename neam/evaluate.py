@@ -187,7 +187,7 @@ def conll_eval(test, gold):
             if t1 == t2:
                 correct_open = True  # a correct opening tag was found
         # if a correct opening tag has already been found
-        elif correct_open:
+        if correct_open:
             # if the test's tag has been closed, and that tag matches the gold at this point
             if t1_has_right and t1 == t2:
                 correct += 1  # exact match found
@@ -225,7 +225,7 @@ def muc_eval(test, gold):
             test_tag = re.search(r'<(\w+)>', t1).group(1)  # get tag type
             test_span[0] = i  # get start index of span
         # if the test token has a closing tag
-        elif re.search(r'</(\w+)>', t1):
+        if re.search(r'</(\w+)>', t1):
             # if the start index of span is initialized (if it's not, it
             # has been reset and we should do nothing)
             if test_span[0] != -1:
@@ -237,19 +237,27 @@ def muc_eval(test, gold):
             gold_tag = re.search(r'<(\w+)>', t2).group(1)  # get tag type
             gold_span[0] = i  # get start index of span
         # if the test token has a closing tag
-        elif re.search(r'</(\w+)>', t2):
+        if re.search(r'</(\w+)>', t2):
             # if the start index of span is initialized (if it's not, it
             # has been reset and we should do nothing)
             if gold_span[0] != -1:
                 gold_span[1] = i  # get end index of span
         # if an open tag has been closed
         if test_span[1] > -1 or gold_span[1] > -1:
+            incorrect = False # whether the tag is wrong in some way
             # if tag types match
             if test_tag == gold_tag:
                 type_cor += 1  # increment correct tag type
+            else:
+                incorrect = True
             # if tag spans match
             if test_span == gold_span:
                 text_cor += 1  # increment correct span
+            else:
+                incorrect = True
+            # dump incorrect tags to stderr
+            if incorrect:
+                print2err(test_span, gold_span, test, gold)
             # reset tag variables
             test_tag = ""
             test_span = [-1, -1]
@@ -257,6 +265,29 @@ def muc_eval(test, gold):
             gold_span = [-1, -1]
     # write the results to stdout
     print_eval('MUC', text_cor + type_cor, text_gue + type_gue, text_pos + type_pos)
+
+
+def print2err(test_span, gold_span, test_tokens, gold_tokens):
+    """
+    Prints the span containing the proposed tag and its corresponding span in the
+    gold standard, and vice versa, to stderr.
+    :param test_span: the span of the proposed tag
+    :param gold_span: the span of the gold tag
+    :param test_tokens: tokens in test data
+    :param gold_tokens: tokens in gold standard
+    """
+    # if both test and gold have a tag open in the span
+    if test_span[0] > -1 and gold_span[0] > -1:
+        start = min(test_span[0], gold_span[0])
+    else:
+        # max can be used because if the start is uninitialized, it is -1
+        start = max(test_span[0], gold_span[0])
+    end = max(test_span[1], gold_span[1])
+    # get the test text contained in full span
+    test_text = " ".join(test_tokens[start:end+1])
+    # get the gold text contained in full span
+    gold_text = " ".join(gold_tokens[start:end+1])
+    print("[{}] VS [{}]".format(test_text, gold_text), file=sys.stderr)
 
 
 def print_eval(name, correct, guesses, possible):
@@ -297,8 +328,8 @@ def main():
     # ensure the data are formatted for evaluation
     if check(test, gold):
         # evaluate using CoNLL and MUC style evaluation
-        conll_eval(test, gold)
         muc_eval(test, gold)
+        conll_eval(test, gold)
 
 
 if __name__ == '__main__':
