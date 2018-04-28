@@ -1,7 +1,0 @@
-PERSON = persName
-LOCATION = placeName
-ORGANIZATION = orgName
-geo = placeName
-org = orgName
-per = persName
-gpe = orgName

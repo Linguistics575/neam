@@ -1,0 +1,9 @@
+{
+  "annotators": "tokenize,ssplit,pos,lemma,ner,entitymentions",
+
+  "ner.applyNumericClassifiers": "false",
+
+  "tokenize.keepeol": "true",
+
+  "tokenize.options": "asciiQuotes"
+}

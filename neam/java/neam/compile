@@ -1,4 +1,4 @@
 #!/bin/sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-javac "$DIR/Classify.java" -Xlint:unchecked
+javac "$DIR"/clms/neam/**/*.java -Xlint:unchecked

@@ -1,3 +1,5 @@
+package clms.neam.classify;
+
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
@@ -11,7 +13,7 @@ import java.util.*;
  * Initialize with a CoreNLP Properties object, then call classify on a file name to
  * classify that file.
  */
-class NEAMClassifier {
+public class NEAMClassifier {
 
     /**
      * The CoreNLP pipeline to use to classify incoming text
@@ -21,15 +23,17 @@ class NEAMClassifier {
     /**
      * Map of Stanford tags to TEI tags
      */
-    public final NEAMDict tags = new NEAMDict();
+    private Properties tags;
 
     /**
      * Initializes the classifier.
      *
      * @param props CoreNLP Properties to initialize the pipeline with
+     * @param tags  
      */
-    public NEAMClassifier(Properties props) {
+    public NEAMClassifier(Properties props, Properties tags) {
         pipeline = new StanfordCoreNLP(props);
+        this.tags = tags;
     }
 
     /**
@@ -38,8 +42,11 @@ class NEAMClassifier {
      * @param fileName The name of the file to classify
      * @return The text of the file, marked up with NE tags
      */
-    public String classify(String fileName) {
-        Annotation document = new Annotation(Util.loadFile(fileName));
+    public String classify(String text) {
+        return classify(new Annotation(text));
+    }
+
+    public String classify(Annotation document) {
         pipeline.annotate(document);
         return tagDocument(document);
     }
@@ -66,7 +73,7 @@ class NEAMClassifier {
             phrase = namedEntity.toString();
 
             if (tags.containsKey(tag)) {
-                tag = tags.get(tag);
+                tag = tags.getProperty(tag);
             }
 
             // Find the location of the current phrase in the document
