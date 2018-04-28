@@ -29,7 +29,7 @@ def load_classifier(args):
 
 
 def load_args():
-    parser = argparse.ArgumentParser(description='Here is my the description')
+    parser = argparse.ArgumentParser(description='Named Entity recognition and Automated Markup on historical texts')
     parser.add_argument('file', help='The file NEAM should classify')
     parser.add_argument('--model', help='A NER model to override the default')
     parser.add_argument('--gs', help='The gold standard')
