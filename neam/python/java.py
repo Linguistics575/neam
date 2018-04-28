@@ -2,6 +2,7 @@ import atexit
 import os
 import platform
 import shutil
+import sys
 from jpype import startJVM, shutdownJVM, JPackage, getDefaultJVMPath, java
 from urllib.request import urlretrieve
 

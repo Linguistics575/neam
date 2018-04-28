@@ -17,6 +17,6 @@ if [[ $FIRST_TIME ]]; then
     pip3 install -r requirements.txt
 fi
 
-PYTHONIOENCODING=utf-8 python3 "$DIR/neam/python/neam.py" $@
+PYTHONIOENCODING=utf-8 python3 "$DIR/neam.py" $@
 deactivate
 
