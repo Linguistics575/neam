@@ -16,7 +16,7 @@ VERSION = '3.7.0'
 JARS = ['stanford-corenlp-'+VERSION+'.jar', 'stanford-corenlp-'+VERSION+'-models.jar']
 
 # The Maven search path
-MAVEN_URL = 'http://search.maven.org/remotecontent?filepath=edu/stanford/nlp/stanford-corenlp' + VERSION + '/'
+MAVEN_URL = 'http://search.maven.org/remotecontent?filepath=edu/stanford/nlp/stanford-corenlp/' + VERSION + '/'
 
 # Establish paths to the java directory
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -43,8 +43,9 @@ def install_corenlp():
                 url = MAVEN_URL + jar
                 file_path = os.path.join(lib_dir, jar)
                 urlretrieve(url, file_path)
-        except:
+        except Exception as e:
             print('Error downloading Stanford CoreNLP.', file=sys.stderr)
+            print(str(e), file=sys.stderr)
             shutil.rmtree(lib_dir)
 
 
