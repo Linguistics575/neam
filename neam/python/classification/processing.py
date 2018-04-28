@@ -188,7 +188,12 @@ class JournalShaper(NEAMProcessor):
 
         :param match_data: The result from a regular expression search
         """
-        [title, month, day, year] = match_data
+        groups = match_data.groups()
+
+        title = match_data.group(0)
+        month = match_data.group(1)
+        day   = match_data.group(2)
+        year  = match_data.group(3)
 
         if day:
             day = int(day)
