@@ -3,13 +3,20 @@
 # from https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-PROPERTY_FILE="$DIR/ner.prop"
-TAG_FILE="$DIR/tags.prop"
-TEMP_FILE="temp.txt"
+if [ ! -d $DIR/.venv ]; then
+    echo "Setting up environment for first-time run..."
+    python3 -m venv $DIR/.venv
+    FIRST_TIME=true
+fi
 
-PYTHONIOENCODING=utf-8 "$DIR/neam/preprocess.py" $1 > "$TEMP_FILE"
+source $DIR/.venv/bin/activate
 
-"$DIR/neam/java/run" "$TEMP_FILE" $PROPERTY_FILE $TAG_FILE "$2" | "$DIR/neam/postprocess.py" | "$DIR/neam/beautify.py"
+if [[ $FIRST_TIME ]]; then
+    echo "Installing Python dependencies..."
+    echo $FIRST_TIME
+    pip3 install -r requirements.txt
+fi
 
-rm -f "$TEMP_FILE"
+PYTHONIOENCODING=utf-8 python3 "$DIR/neam/python/neam.py" $@
+deactivate
 
