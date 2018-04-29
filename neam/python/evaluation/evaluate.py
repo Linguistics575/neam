@@ -244,7 +244,7 @@ def muc_eval(test, gold):
                 gold_span[1] = i  # get end index of span
         # if an open tag has been closed
         if test_span[1] > -1 or gold_span[1] > -1:
-            incorrect = False # whether the tag is wrong in some way
+            incorrect = False  # whether the tag is wrong in some way
             # if tag types match
             if test_tag == gold_tag:
                 type_cor += 1  # increment correct tag type
@@ -316,7 +316,10 @@ def main():
     except IndexError:
         print('Command line arguments needed: file to be tested, gold standard file')
         sys.exit(1)
-        # make soup for test
+    if len(sys.argv) > 3:
+        global KEEP_TAGS
+        KEEP_TAGS = sys.argv[3:]
+    # make soup for test
     with open(testfile, 'r', encoding='utf-8', errors="surrogateescape") as tf:
         test = BeautifulSoup(tf, 'html.parser')
     # make soup for gold
