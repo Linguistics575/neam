@@ -53,7 +53,7 @@ def climbToFindCat(the_id):
         if a == 'Q223557':
             return 'Location'
         elif a == 'Q24229398' or 'Q43229' or 'Q783794' or 'Q1900326':
-:            return 'Organization'
+            return 'Organization'
         else:
             try:
                 return climbToFindCat(a)
