@@ -7,7 +7,6 @@ import sys
 
 #entity_file = open(sys.argv[1], 'r')
 #entities = entity_file.read().split('\n')
-searched = sys.argv[1]
 
 def getItems(site, itemtitle):
      params = { 'action' :'wbsearchentities' , 'format' : 'json' , 'language' : 'en', 'type' : 'item', 'search': itemtitle}
@@ -74,8 +73,12 @@ def check_Entity(ent=str()):
         except:
             return 'Unknown'
 
+
 site = wiki_d_login()
-print(check_Entity(searched))
+
+if __name__ == '__main__':
+    searched = sys.argv[1]
+    print(check_Entity(searched))
 
 '''
 site = wiki_d_login()
