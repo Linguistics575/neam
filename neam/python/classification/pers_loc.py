@@ -11,7 +11,7 @@ searched = sys.argv[1]
 
 def getItems(site, itemtitle):
      params = { 'action' :'wbsearchentities' , 'format' : 'json' , 'language' : 'en', 'type' : 'item', 'search': itemtitle}
-     request = api.Request(site=site,**params)
+     request = api.Request(site=site, parameters=params)
      return request.submit()
 
 def getItem(site, wdItem, token):
