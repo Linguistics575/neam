@@ -13,6 +13,7 @@ def main():
         SicReplacer(),
         PossessionFixer(),
         JournalShaper('EBA', args.year),
+        RefAnnotator(),
         SpaceNormalizer(),
         Beautifier()
     ])
