@@ -52,7 +52,7 @@ def climbToFindCat(the_id):
         a = getHigherClass(the_id)
         if a == 'Q223557':
             return 'Location'
-        elif a == 'Q24229398' or 'Q43229' or 'Q783794' or 'Q1900326':
+        elif a in ['Q24229398', 'Q16334295', 'Q1900326', 'Q783794', 'Q43229']:
             return 'Organization'
         else:
             try:
