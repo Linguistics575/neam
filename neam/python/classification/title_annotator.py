@@ -96,18 +96,22 @@ class TitleClassifier:
 
 def extract(line):
     tokens = word_tokenize(line)
-    tags = []
+    penn_tags = []
+    univ_tags = []
 
     if tokens:
-        tagged = pos_tag(tokens)
-        tokens, tags = zip(*tagged)
+        penn_tagged = pos_tag(tokens)
+        univ_tagged = pos_tag(tokens, tagset='universal')
+
+        _, penn_tags = zip(*penn_tagged)
+        _, univ_tags = zip(*univ_tagged)
 
     features = {'numTokens': len(tokens)}
 
     for token in set(tokens):
         features["token({})".format(token)] = 1
 
-    for tag in set(tags):
+    for tag in set(penn_tags + univ_tags):
         features["tags({})".format(tag)] = 1
 
     return features
