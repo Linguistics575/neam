@@ -115,6 +115,15 @@ class SpaceNormalizer(NEAMProcessor):
         return re.sub('(?<= ) ', '', text)
 
 
+class PossessionFixer(NEAMProcessor):
+    """
+    Moves possession markers inside tags
+    """
+    def run(self, text):
+        text =re.sub("(<[^/>]+>[^<]+)(<[^>]+>)'s", "\g<1>'s\g<2>", text)
+        return re.sub("(?<!')(<[^/>]+>[^<]*s)(<[^>]+>)'", "\g<1>'\g<2>", text)
+
+
 MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'oct', 'nov', 'dec']
 ORDINALS = ['st', 'nd', 'rd', 'th']
 
@@ -305,5 +314,5 @@ class Beautifier(NEAMProcessor):
         return '</{}>'.format(tag.name)
 
 
-__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'JournalShaper', 'Beautifier', 'Pipeline']
+__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'JournalShaper', 'Beautifier', 'Pipeline', 'PossessionFixer']
 

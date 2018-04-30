@@ -65,3 +65,27 @@ class TestSpaceNormalizer(unittest.TestCase):
         output = self.processor.run('hello   <b>there</b>')
         self.assertEqual('hello <b>there</b>', output)
 
+
+class TestPossessionFixer(unittest.TestCase):
+    def setUp(self):
+        self.processor = PossessionFixer()
+
+    def test_it_moves_possessive_s_into_a_tag(self):
+        output = self.processor.run('<persName>Bob</persName>\'s')
+        self.assertEqual('<persName>Bob\'s</persName>', output)
+
+    def test_it_moves_possessive_apostrophe_into_a_tag(self):
+        output = self.processor.run('<persName>Bobs</persName>\'')
+        self.assertEqual('<persName>Bobs\'</persName>', output)
+
+    def test_it_only_moves_possessive_apostrophes_if_the_word_ends_in_s(self):
+        output = self.processor.run("<persName>Bob</persName>'")
+        self.assertEqual("<persName>Bob</persName>'", output)
+
+    def test_it_doesnt_move_single_quotes(self):
+        output = self.processor.run("'<persName>Bobs</persName>'")
+        self.assertEqual("'<persName>Bobs</persName>'", output)
+
+    def test_it_moves_possession_within_the_first_tag(self):
+        output = self.processor.run("<persName>James</persName> and <persName>Bobs</persName>'")
+        self.assertEqual("<persName>James</persName> and <persName>Bobs'</persName>", output)

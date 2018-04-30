@@ -10,6 +10,7 @@ def main():
         load_classifier(args),
         PageReplacer(),
         SicReplacer(),
+        PossessionFixer(),
         JournalShaper('EBA', args.year),
         SpaceNormalizer(),
         Beautifier()
