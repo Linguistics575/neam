@@ -12,8 +12,12 @@ import re
 import sys
 
 
-# the tags we want to evaluate and keep in the gold standard
+# the tags we want to keep in the gold standard
 KEEP_TAGS = ['persname', 'placename', 'orgname']
+
+
+# the tags we want to see accuracy for
+EVAL_TAGS = ['persname', 'placename', 'orgname']
 
 
 def clean_gold(soup):
@@ -65,7 +69,7 @@ def clean_test(soup):
     # remove tags which we do not want to keep
     for tag in tags:
         tag_name = re.search(r'\w+', tag)
-        if tag_name.group(0) not in KEEP_TAGS:
+        if tag_name.group(0) not in EVAL_TAGS:
             str_soup = re.sub(tag, '', str_soup)
     # remove page information
     str_soup = re.sub(r'PAGE \d+', '', str_soup)
@@ -166,23 +170,30 @@ def conll_eval(test, gold):
     :param gold: the gold standard data
     :type test: list of strings
     """
-    correct = 0   # number of correct guesses made
-    guesses = 0   # total number of guesses made
-    possible = 0  # number of possible correct tags
+    counts = {}
+    for tag in EVAL_TAGS:
+        counts[tag] = {'cor': 0,  # number of correct guesses made
+                       'gue': 0,  # total number of guesses made
+                       'pos': 0}  # number of possible correct tags
     # whether an opening tag in test has been found and matches the gold
     correct_open = False
     for i, t1 in enumerate(test):
         t2 = gold[i]
         # an opening tag found in test
-        t1_has_left = re.search(r'<\w+>', t1)
+        t1_has_left = re.search(r'<(\w+)>', t1)
         # its closing tag
         t1_has_right = re.search(r'</\w+>', t1)
         # an opening tag found in gold
-        if re.search(r'<\w+>', t2):
-            possible += 1  # increment number of possible correct tags
+        if re.search(r'<(\w+)>', t2):
+            gold_tag = re.search(r'<(\w+)>', t2).group(1)
+            if gold_tag in EVAL_TAGS:
+                # increment number of possible correct tags
+                counts[gold_tag]['pos'] = counts[gold_tag]['pos'] + 1
         # an opening tag found in test
         if t1_has_left:
-            guesses += 1  # increment number of guesses
+            test_tag = t1_has_left.group(1)
+            # increment number of guesses
+            counts[test_tag]['gue'] = counts[test_tag]['gue'] + 1
             # if the tag matches the gold at this point
             if t1 == t2:
                 correct_open = True  # a correct opening tag was found
@@ -190,10 +201,11 @@ def conll_eval(test, gold):
         if correct_open:
             # if the test's tag has been closed, and that tag matches the gold at this point
             if t1_has_right and t1 == t2:
-                correct += 1  # exact match found
+                # exact match found
+                counts[test_tag]['cor'] = counts[test_tag]['cor'] + 1
                 correct_open = False  # reset the opening tag tracker
     # write the results to stdout
-    print_eval('CoNLL', correct, guesses, possible)
+    print_eval('CoNLL', counts)
 
 
 def muc_eval(test, gold):
@@ -206,12 +218,14 @@ def muc_eval(test, gold):
     :param gold: the gold standard data
     :type test: list of strings
     """
-    text_cor = 0  # number of correct spans
-    text_gue = 0  # total span guesses
-    text_pos = 0  # number of possible correct spans
-    type_cor = 0  # number of correct tag types
-    type_gue = 0  # total tag type guesses
-    type_pos = 0  # number of possible correct tag types
+    counts = {}
+    for tag in EVAL_TAGS:
+        counts[tag] = {'text_cor': 0,  # number of correct spans
+                       'text_gue': 0,  # total span guesses
+                       'text_pos': 0,  # number of possible correct spans
+                       'type_cor': 0,  # number of correct tag types
+                       'type_gue': 0,  # total tag type guesses
+                       'type_pos': 0}  # number of possible correct tag types
     test_tag = ""  # type of tag found in test, empty if uninitialized
     test_span = [-1, -1]  # span of tag found in test, -1 if uninitialized
     gold_tag = ""  # type of tag found in gold, empty if uninitialized
@@ -220,10 +234,11 @@ def muc_eval(test, gold):
         t2 = gold[i]
         # if the test token has an opening tag
         if re.search(r'<(\w+)>', t1):
-            text_gue += 1  # increment total guesses
-            type_gue += 1
             test_tag = re.search(r'<(\w+)>', t1).group(1)  # get tag type
             test_span[0] = i  # get start index of span
+            # increment total guesses
+            counts[test_tag]['text_gue'] = counts[test_tag]['text_gue'] + 1
+            counts[test_tag]['type_gue'] = counts[test_tag]['type_gue'] + 1
         # if the test token has a closing tag
         if re.search(r'</(\w+)>', t1):
             # if the start index of span is initialized (if it's not, it
@@ -232,10 +247,12 @@ def muc_eval(test, gold):
                 test_span[1] = i  # get end index of span
         # if the test token has an opening tag
         if re.search(r'<(\w+)>', t2):
-            text_pos += 1  # increment total possible correct
-            type_pos += 1
             gold_tag = re.search(r'<(\w+)>', t2).group(1)  # get tag type
             gold_span[0] = i  # get start index of span
+            if gold_tag in EVAL_TAGS:
+                # increment total possible correct
+                counts[gold_tag]['text_pos'] = counts[gold_tag]['text_pos'] + 1
+                counts[gold_tag]['type_pos'] = counts[gold_tag]['type_pos'] + 1
         # if the test token has a closing tag
         if re.search(r'</(\w+)>', t2):
             # if the start index of span is initialized (if it's not, it
@@ -244,15 +261,17 @@ def muc_eval(test, gold):
                 gold_span[1] = i  # get end index of span
         # if an open tag has been closed
         if test_span[1] > -1 or gold_span[1] > -1:
-            incorrect = False # whether the tag is wrong in some way
+            incorrect = False  # whether the tag is wrong in some way
             # if tag types match
             if test_tag == gold_tag:
-                type_cor += 1  # increment correct tag type
+                # increment correct tag type
+                counts[test_tag]['type_cor'] = counts[test_tag]['type_cor'] + 1
             else:
                 incorrect = True
             # if tag spans match
             if test_span == gold_span:
-                text_cor += 1  # increment correct span
+                # increment correct span
+                counts[test_tag]['text_cor'] = counts[test_tag]['text_cor'] + 1
             else:
                 incorrect = True
             # dump incorrect tags to stderr
@@ -263,8 +282,13 @@ def muc_eval(test, gold):
             test_span = [-1, -1]
             gold_tag = ""
             gold_span = [-1, -1]
+    totals = {}
+    for tag in EVAL_TAGS:
+        totals[tag] = {'cor': counts[tag]['text_cor'] + counts[tag]['type_cor'],
+                       'gue': counts[tag]['text_gue'] + counts[tag]['type_gue'],
+                       'pos': counts[tag]['text_pos'] + counts[tag]['type_pos']}
     # write the results to stdout
-    print_eval('MUC', text_cor + type_cor, text_gue + type_gue, text_pos + type_pos)
+    print_eval('MUC', totals)
 
 
 def print2err(test_span, gold_span, test_tokens, gold_tokens):
@@ -290,22 +314,69 @@ def print2err(test_span, gold_span, test_tokens, gold_tokens):
     print("[{}] VS [{}]".format(test_text, gold_text), file=sys.stderr)
 
 
-def print_eval(name, correct, guesses, possible):
+def print_eval(name, totals):
     """
     Writes the precision, recall, and f-measure of the input counts to stdout, with
     the name of the evaluation style used.
     :param name: name of evaluation style used
-    :param correct: correct guesses
-    :param guesses: total guesses
-    :param possible: total possible correct
+    :param totals: the counts for correct, guesses, and possible tags
     """
-    precision = correct / guesses
-    recall = correct / possible
-    fmeasure = 2 * ((precision * recall) / (precision + recall))
+    cols = ['Precision', 'Recall', 'F-measure']  # columns out output table
+    rows = []  # rows of output table
+    total_cor = 0  # total correct guesses for all tags
+    total_gue = 0  # total guesses for all tags
+    total_pos = 0  # total possible correct guesses for all tags
+    accuracy = []  # precision, recall, and f-measure for every tag
+    # for every tag
+    for tag in totals:
+        rows.append(tag)  # make a row for it
+        # increment total counts
+        total_cor += totals[tag]['cor']
+        total_gue += totals[tag]['gue']
+        total_pos += totals[tag]['pos']
+        # get precision, recall, and f-measure for tag
+        precision = safe_divide(totals[tag]['cor'], totals[tag]['gue'])
+        recall = safe_divide(totals[tag]['cor'], totals[tag]['pos'])
+        fmeasure = 2 * safe_divide(precision * recall, precision + recall)
+        # add figures to master list
+        accuracy.append([precision, recall, fmeasure])
+    # make a row for the total accuracy of all tags
+    rows.append('Total')
+    # get total precision, recall, and f-measure
+    total_precision = safe_divide(total_cor, total_gue)
+    total_recall = safe_divide(total_cor, total_pos)
+    total_fmeasure = 2 * safe_divide(total_precision * total_recall, total_precision + total_recall)
+    # add figures to master list
+    accuracy.append([total_precision, total_recall, total_fmeasure])
+    # get the column width
+    max_width = max(len(x) for x in cols + rows) + 2
+    # create the format for text cells
+    text_align = '{:>%d}' % max_width
+    # create the format for numerical cells
+    num_align = '{:>%d.6}' % max_width
+    num_align = num_align * 3
+    # create format for the first row
+    first_row = text_align * 4
+    # print the table
     print('\n%s-Style Evaluation Results:' % name)
-    print('\tPrecision = %f' % precision)
-    print('\t   Recall = %f' % recall)
-    print('\tF-measure = %f' % fmeasure)
+    print(first_row.format("", *cols))
+    for i, tag in enumerate(rows):
+        vals = accuracy[i]
+        print(text_align.format(tag), end="")
+        print(num_align.format(*vals))
+
+
+def safe_divide(x, y):
+    """
+    Divides two numbers, or returns NaN if the denominator is 0.
+    :param x: the numerator
+    :param y: the denominator
+    :return: the ratio of x to y
+    """
+    try:
+        return x / y
+    except ZeroDivisionError:
+        return float('nan')
 
 
 def main():
@@ -316,7 +387,10 @@ def main():
     except IndexError:
         print('Command line arguments needed: file to be tested, gold standard file')
         sys.exit(1)
-        # make soup for test
+    if len(sys.argv) > 3:
+        global EVAL_TAGS
+        EVAL_TAGS = [x.lower() for x in sys.argv[3:]]
+    # make soup for test
     with open(testfile, 'r', encoding='utf-8', errors="surrogateescape") as tf:
         test = BeautifulSoup(tf, 'html.parser')
     # make soup for gold
