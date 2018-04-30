@@ -8,6 +8,7 @@ def main():
     pipeline = Pipeline([
         ASCIIifier(),
         load_classifier(args),
+        TitleAnnotator(),
         PageReplacer(),
         SicReplacer(),
         PossessionFixer(),

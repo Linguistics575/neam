@@ -124,24 +124,12 @@ class PossessionFixer(NEAMProcessor):
         return re.sub("(?<!')(<[^/>]+>[^<]*s)(<[^>]+>)'", "\g<1>'\g<2>", text)
 
 
-MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'oct', 'nov', 'dec']
-ORDINALS = ['st', 'nd', 'rd', 'th']
-
-
 class JournalShaper(NEAMProcessor):
     """
     Shapes journal text into TEI format by finding titles and paragraphs
     """
-    _title_pattern = re.compile(
-        r"""\n(?:[^.\n\s]+(?:\ +[^.\n\s]+){{,4}}(?:\ -|[,.])\ +)* # The preceeding sentence - the sentence must either be on the same line as the date, or on its own line
-       (?:<.*?>)?                                            # Allow the month to be surrounded in a tag 
-           ({})(?:\.|[a-z]+)?                                # The month, optionally followed by a period or some more letters (for a full month spelling)
-       (?:</.*?>)?                                           # Allow the month to be surrounded in a tag 
-       \ +(\d+)(?:{})?\.?                                    # The day, optionally followed by an ordinal marker
-       \ *(\d+)?\.?                                          # The year
-       [^\n.]*\.?                                            # The rest of the line
-        """.format('|'.join(MONTHS), '|'.join(ORDINALS)), re.I | re.X
-    )
+    _MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'oct', 'nov', 'dec']
+    _ORDINALS = ['st', 'd', 'nd', 'rd', 'th']
 
     def __init__(self, author, year = 0, month = 1, day = 1):
         """
@@ -187,22 +175,32 @@ class JournalShaper(NEAMProcessor):
         return self._pad(self._day, 2)
 
     def run(self, text):
-        text = self._title_pattern.sub(self._make_title, text)
-        text = self._tag_bodies(text)
-        return '<body>' + text + '</p></body>'
+        text = re.sub('(<title>)(.*?)(</title>)(.*?)(?=<title>)', self._format, text, flags=re.S)
+        text = re.sub('(?<!<p>)(<title>)(.*?)(</title>)(.*?)$', self._format, text, flags=re.S)
+        return '<body>' + text + '</body>'
 
-    def _make_title(self, match_data):
+    def _format(self, match_data):
+        open_tag  = match_data.group(1)
+        title     = match_data.group(2)
+        close_tag = match_data.group(3)
+        body      = match_data.group(4)
+
+        code = self._make_code(re.search('({})(?:\.|[a-z]+)? +(\d+)(?:{})?\.?(?: +(\d+)\.?)?'.format('|'.join(self._MONTHS), '|'.join(self._ORDINALS)), title.lower()))
+
+        return '<div xml:id="' + code + '" type="Entry"><p>' + open_tag + title + close_tag + '</p><p>' + body + '</p></div>'
+
+    def _make_code(self, match_data):
         """
         Translates match data into a TEI title
 
         :param match_data: The result from a regular expression search
         """
-        groups = match_data.groups()
+        month = day = year = None
 
-        title = match_data.group(0)
-        month = match_data.group(1)
-        day   = match_data.group(2)
-        year  = match_data.group(3)
+        if match_data:
+            month = match_data.group(1)
+            day   = match_data.group(2)
+            year  = match_data.group(3)
 
         if day:
             day = int(day)
@@ -211,7 +209,7 @@ class JournalShaper(NEAMProcessor):
             self._day = int(day)
 
         if month:
-            month = MONTHS.index(month.lower()) + 1
+            month = self._MONTHS.index(month.lower()) + 1
             if month < self._month:
                 self._year += 1
             self._month = month
@@ -219,9 +217,7 @@ class JournalShaper(NEAMProcessor):
         if year:
             self._year = int(year)
 
-        return '<div xml:id="{}{}{}{}" type="Entry"><p><title>{}</title></p><p>'.format(
-                self._author, self.formatted_year, self.formatted_month, self.formatted_day, title
-        )
+        return self._author + self.formatted_year + self.formatted_month + self.formatted_day
 
     def _tag_bodies(self, text):
         """
