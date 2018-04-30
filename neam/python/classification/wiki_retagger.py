@@ -1,3 +1,6 @@
+"""
+Processor for retagging named entities using Wikidata
+"""
 from bs4 import BeautifulSoup
 from neam.python.classification.processing import NEAMProcessor
 from neam.python.classification.pers_loc import check_Entity
@@ -20,11 +23,24 @@ class WikiRetagger(NEAMProcessor):
         self._cache = {}
 
     def run(self, text):
+        """
+        Runs a block of text through the retagger.
+
+        The text must be valid XML.
+
+        :param text: The text to run through the tagger
+        :type text: str
+        :return: The retagged text
+        :rtype: str
+        """
+        # Parse the text to get the XML structure
         soup = BeautifulSoup(text, 'lxml')
 
+        # Run through each NE tag and evaluate it
         for element in soup.find_all(self._tags):
             named_entity = ' '.join(element.stripped_strings)
 
+            # If we've seen the word already, don't bother with a Wiki search
             if named_entity in self._cache:
                 if self._cache[named_entity]:
                     element.name = self._cache[named_entity]
