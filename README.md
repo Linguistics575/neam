@@ -42,4 +42,4 @@ executing
 
 ẁhere `output` is the XML file you are evaluating, and `gold` is the gold standard XML file. You 
 can optionally include a sequence of tags you want evaluated after this. If no tags are included, 
-persname, placename, and orgname are evaluated by default.
+persname, placename, and orgname are evaluated by default. The evaluation script will dump all incorrect taggings to stderr. This can be redirected to a file using `2>` followed by the desired filename when executing the script.
