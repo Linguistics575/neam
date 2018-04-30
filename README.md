@@ -34,3 +34,12 @@ its dependencies, running `./neam.sh file` will initialize a virtual environment
 dependencies before running NEAM. The virtual environment will be left in place, so this install
 will only need to be done once, even though you will need to continue to call `neam.sh` instead
 of `neam.py`.
+
+Evaluation of the system's output against a gold standard can be carried out in isolation by 
+executing
+
+`./evaluate.sh <output> <gold> [eval_tag ...]`
+
+ẁhere `output` is the XML file you are evaluating, and `gold` is the gold standard XML file. You 
+can optionally include a sequence of tags you want evaluated after this. If no tags are included, 
+persname, placename, and orgname are evaluated by default.
