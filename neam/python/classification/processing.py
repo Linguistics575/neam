@@ -124,6 +124,26 @@ class PossessionFixer(NEAMProcessor):
         return re.sub("(?<!')(<[^/>]+>[^<]*s)(<[^>]+>)'", "\g<1>'\g<2>", text)
 
 
+class TagExpander(NEAMProcessor):
+    _SPACE_PATTERN = re.compile(' +')
+
+    def __init__(self, tags, words):
+        self._tags = tags
+        self._words = words
+        self._pattern = re.compile('((?:(?:{})\s+)+)<({})>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
+
+    def run(self, text):
+        return self._pattern.sub(self._format, text)
+
+    def _format(self, match_object):
+        words = match_object.group(1).strip()
+        tag = match_object.group(2)
+
+        words = self._SPACE_PATTERN.sub(' ', words)
+
+        return '<{}>{} '.format(tag, words)
+
+
 class JournalShaper(NEAMProcessor):
     """
     Shapes journal text into TEI format by finding titles and paragraphs
@@ -310,5 +330,5 @@ class Beautifier(NEAMProcessor):
         return '</{}>'.format(tag.name)
 
 
-__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'JournalShaper', 'Beautifier', 'Pipeline', 'PossessionFixer']
+__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'JournalShaper', 'Beautifier', 'Pipeline', 'PossessionFixer', 'TagExpander']
 

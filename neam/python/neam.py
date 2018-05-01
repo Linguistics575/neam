@@ -6,14 +6,22 @@ def main():
     args = load_args()
 
     pipeline = Pipeline([
+        # Preprocessing
         ASCIIifier(),
+
+        # Tagging
         load_classifier(args),
         TitleAnnotator(),
         PageReplacer(),
         SicReplacer(),
+
+        # Tag postprocessing
+        TagExpander(tags=['placeName', 'persName', 'orgName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.', 'Maj.', 'Col.', 'Rev']),
         PossessionFixer(),
         JournalShaper('EBA', args.year),
         RefAnnotator(),
+
+        # Formatting
         SpaceNormalizer(),
         Beautifier()
     ])

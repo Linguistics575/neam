@@ -89,3 +89,25 @@ class TestPossessionFixer(unittest.TestCase):
     def test_it_moves_possession_within_the_first_tag(self):
         output = self.processor.run("<persName>James</persName> and <persName>Bobs</persName>'")
         self.assertEqual("<persName>James</persName> and <persName>Bobs'</persName>", output)
+
+
+class TestTagExpander(unittest.TestCase):
+    def setUp(self):
+        tags = ['persName', 'placeName']
+        words = ['the', 'Mrs.', 'Dr.']
+
+        self.processor = TagExpander(tags=tags, words=words)
+
+    def test_it_expands_single_words_to_the_left_of_tags(self):
+        output = self.processor.run('the <placeName>Grand Canyon</placeName>')
+        self.assertEqual('<placeName>the Grand Canyon</placeName>', output)
+
+    def test_it_expands_multiple_words_to_the_left_of_tags(self):
+        output = self.processor.run('Dr. Mrs. <persName>Jane Doe</persName>')
+        self.assertEqual('<persName>Dr. Mrs. Jane Doe</persName>', output)
+
+    def test_it_expands_case_insensitively(self):
+        output = self.processor.run('The <placeName>Grand Canyon</placeName>')
+        self.assertEqual('<placeName>The Grand Canyon</placeName>', output)
+
+
