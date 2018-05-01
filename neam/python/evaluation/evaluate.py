@@ -328,7 +328,7 @@ def print_eval(name, totals):
     total_pos = 0  # total possible correct guesses for all tags
     accuracy = []  # precision, recall, and f-measure for every tag
     # for every tag
-    for tag in totals:
+    for tag in EVAL_TAGS:
         rows.append(tag)  # make a row for it
         # increment total counts
         total_cor += totals[tag]['cor']
@@ -390,6 +390,7 @@ def main():
     if len(sys.argv) > 3:
         global EVAL_TAGS
         EVAL_TAGS = [x.lower() for x in sys.argv[3:]]
+    EVAL_TAGS.sort()
     # make soup for test
     with open(testfile, 'r', encoding='utf-8', errors="surrogateescape") as tf:
         test = BeautifulSoup(tf, 'html.parser')
