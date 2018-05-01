@@ -15,7 +15,7 @@ class RefAnnotator(NEAMProcessor):
     def _make_ref(self, match_object):
         tag = match_object.group(1)
         ne  = match_object.group(2)
-        ref = ne.replace(' ', '_')
+        ref = ne.replace(' ', '_').replace('.', '')
 
         return '<{} ref="#{}">{}</{}>'.format(tag, ref, ne, tag)
 
