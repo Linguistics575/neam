@@ -1,3 +1,4 @@
+import re
 from neam.python.classification.processing import NEAMProcessor
 
 class JournalShaper(NEAMProcessor):

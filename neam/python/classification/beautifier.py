@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from neam.python.classification.processing import NEAMProcessor
 
 class Beautifier(NEAMProcessor):
