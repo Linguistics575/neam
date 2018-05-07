@@ -1,5 +1,7 @@
 from unittest import TestCase
-from wiki import Entity
+from neam.python.query.wiki import Entity
+from neam.python.classification import WikiRetagger
+
 
 class EntityTest(TestCase):
     def test_it_looks_up_entities_by_label(self):
@@ -68,4 +70,22 @@ class EntityTest(TestCase):
         options = ['Person', 'Place', 'thing']
         self.assertEqual([], unknown.which(options))
 
+
+class WikiRetaggerTest(TestCase):
+    def setUp(self):
+        tags = ['persName', 'placeName', 'orgName']
+        tagmap = {'Person': 'persName', 'Location': 'placeName', 'Organization': 'orgName' }
+        self.retagger = WikiRetagger(tags, tagmap)
+
+    def test_it_relabels_people(self):
+        output = self.retagger.run('<body><placeName>Queen Elizabeth</placeName></body>')
+        self.assertEqual('<body><persName>Queen Elizabeth</persName></body>', output)
+
+    def test_it_relabels_places(self):
+        output = self.retagger.run('<body><persName>The Grand Canyon</persName></body>')
+        self.assertEqual('<body><placeName>The Grand Canyon</placeName></body>', output)
+
+    def test_it_relabels_when_there_are_intervening_tags(self):
+        output = self.retagger.run('<body><placeName><sic>Queen</sic> Elizabeth</placeName></body>')
+        self.assertEqual('<body><persName><sic>Queen</sic> Elizabeth</persName></body>', output)
 

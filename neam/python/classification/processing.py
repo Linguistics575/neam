@@ -144,5 +144,5 @@ class TagExpander(NEAMProcessor):
         return '<{}>{} '.format(tag, words)
 
 
-__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'JournalShaper', 'Beautifier', 'Pipeline', 'PossessionFixer', 'TagExpander']
+__all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'Pipeline', 'PossessionFixer', 'TagExpander']
 
