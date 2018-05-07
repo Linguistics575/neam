@@ -12,10 +12,10 @@ folder that contains `bin/java`. On Linux, this can be set with the following co
 
 `export JAVA_HOME="/path/to/java"`
 
-If you're going to be running NEAM a lot, it is recommended to put all of this commands inside
-your `.bashrc` file (or the comparable file if you're using a shell other than Bash). You do
-not need to explicitly install Stanford CoreNLP yourself; NEAM will do this for you the first
-time you call it.
+If you're going to be running NEAM a lot, it is recommended to put this command inside your
+`.bashrc` file (or the comparable file if you're using a shell other than Bash). You do not
+need to install Stanford CoreNLP yourself; NEAM will do this for you the first time you call
+it.
 
 ### Python dependencies
 NEAM uses [pip](https://pypi.python.org/pypi/pip) to manage its Python dependencies. If it is
