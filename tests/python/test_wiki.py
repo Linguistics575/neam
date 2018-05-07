@@ -19,8 +19,3 @@ class WikiRetaggerTest(unittest.TestCase):
         output = self.retagger.run('<body><placeName><sic>Queen</sic> Elizabeth</placeName></body>')
         self.assertEqual('<body><persName><sic>Queen</sic> Elizabeth</persName></body>', output)
 
-    def test_it_caches_mappings(self):
-        self.retagger.run('<body><placeName>Queen Elizabeth</placeName></body>')
-        self.assertEqual('persName', self.retagger._cache['Queen Elizabeth'])
-
-

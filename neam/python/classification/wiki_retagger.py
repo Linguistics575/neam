@@ -3,7 +3,7 @@ Processor for retagging named entities using Wikidata
 """
 from bs4 import BeautifulSoup
 from neam.python.classification.processing import NEAMProcessor
-from neam.python.classification.pers_loc import check_Entity
+from neam.python.query import wiki
 
 class WikiRetagger(NEAMProcessor):
     _DEFAULT_TAGS = ['persName', 'placeName', 'orgName']
@@ -20,7 +20,6 @@ class WikiRetagger(NEAMProcessor):
         """
         self._tags = [tag.lower() for tag in tags or self._DEFAULT_TAGS]
         self._tagmap = tagmap or self._DEFAULT_TAGMAP
-        self._cache = {}
 
     def run(self, text):
         """
@@ -39,19 +38,18 @@ class WikiRetagger(NEAMProcessor):
         # Run through each NE tag and evaluate it
         for element in soup.find_all(self._tags):
             named_entity = ' '.join(element.stripped_strings)
+            retag = self.retag(named_entity)
 
-            # If we've seen the word already, don't bother with a Wiki search
-            if named_entity in self._cache:
-                if self._cache[named_entity]:
-                    element.name = self._cache[named_entity]
-            else:
-                retag = check_Entity(named_entity)
-                if retag in self._tagmap:
-                    tag = self._tagmap[retag]
-                    element.name = tag
-                    self._cache[named_entity] = tag
-                else:
-                    self._cache[named_entity] = None
+            if retag:
+                tag = self._tagmap[retag]
+                element.name = tag
 
         return str(soup.body)
+
+    def retag(self, tag):
+        entity = wiki.Entity(tag)
+        matches = entity.which(self._tagmap.keys())
+
+        if matches:
+            return matches[0]
 
