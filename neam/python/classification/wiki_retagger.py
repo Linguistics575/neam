@@ -1,13 +1,22 @@
 """
 Processor for retagging named entities using Wikidata
 """
+from collections import OrderedDict
 from bs4 import BeautifulSoup
 from neam.python.classification.processing import NEAMProcessor
 from neam.python.query import wiki
 
 class WikiRetagger(NEAMProcessor):
     _DEFAULT_TAGS = ['persName', 'placeName', 'orgName']
-    _DEFAULT_TAGMAP = {'Person': 'persName', 'Location': 'placeName', 'Organization': 'orgName'}
+    _DEFAULT_TAGMAP = OrderedDict([
+        ('Person', 'persName'),
+        ('Physical Object', 'placeName'),
+        ('Agent', 'orgName'),
+        ('Group of humans', 'orgName'),
+        ('Network', 'orgName'),
+        ('Company', 'orgName'),
+        ('Organization', 'orgName')
+    ])
 
     def __init__(self, tags=None, tagmap=None):
         """
