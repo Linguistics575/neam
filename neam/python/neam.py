@@ -19,7 +19,7 @@ def main():
         TagExpander(tags=['placeName', 'persName', 'orgName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.', 'Maj.', 'Col.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
         JournalShaper('EBA', args.year),
         RefAnnotator(),
-        PossessionFixer(),
+        #PossessionFixer(),
 
         # Formatting
         SpaceNormalizer(),
