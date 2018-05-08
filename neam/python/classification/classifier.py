@@ -14,6 +14,8 @@ DEFAULT_TAGS = {
     'PERSON': 'persName',
     'LOCATION': 'placeName',
     'ORGANIZATION': 'orgName',
+    'DATE': 'date',
+    'MISC': 'miscName',
     'geo': 'placeName',
     'org': 'orgName',
     'per': 'persName',

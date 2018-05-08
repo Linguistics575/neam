@@ -5,6 +5,7 @@ from neam.python.classification.wiki_retagger import WikiRetagger
 from neam.python.classification.ref_annotator import RefAnnotator
 from neam.python.classification.beautifier import Beautifier
 from neam.python.classification.journal_shaper import JournalShaper
+from neam.python.classification.date_processor import DateProcessor
 
 __all__ = [
     'Classifier',
@@ -21,5 +22,6 @@ __all__ = [
     'TagExpander',
     'WikiRetagger',
     'Beautifier',
-    'JournalShaper'
+    'JournalShaper',
+    'DateProcessor'
 ]
