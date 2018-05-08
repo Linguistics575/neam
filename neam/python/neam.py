@@ -16,9 +16,10 @@ def main():
         SicReplacer(),
 
         # Tag postprocessing
-        TagExpander(tags=['placeName', 'persName', 'orgName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Dr.', 'Maj.', 'Col.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
         DateProcessor(),
+        TagExpander(tags=['persName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
         JournalShaper('EBA', args.year),
+        WikiRetagger(tags=['placeName', 'orgName']),
         RefAnnotator(),
 
         # Formatting
