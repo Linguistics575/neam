@@ -27,7 +27,7 @@ class WikiRetagger(NEAMProcessor):
         :param tagmap: A mapping from Wikipedia tags to TEI tags
         :type tagmap: dict of str: str
         """
-        self._tags = [tag.lower() for tag in tags or self._DEFAULT_TAGS]
+        self._tags = tags or self._DEFAULT_TAGS
         self._tagmap = tagmap or self._DEFAULT_TAGMAP
 
     def run(self, text):
@@ -42,16 +42,19 @@ class WikiRetagger(NEAMProcessor):
         :rtype: str
         """
         # Parse the text to get the XML structure
-        soup = BeautifulSoup(text, 'lxml')
+        soup = BeautifulSoup(text, 'xml')
 
         # Run through each NE tag and evaluate it
-        for element in soup.find_all(self._tags):
-            named_entity = ' '.join(element.stripped_strings)
-            retag = self.retag(named_entity)
+        for tag in self._tags:
+            for element in soup.find_all(tag):
+                named_entity = ' '.join(element.stripped_strings)
+                retag = self.retag(named_entity)
 
-            if retag:
-                tag = self._tagmap[retag]
-                element.name = tag
+                if retag:
+                    new_tag = self._tagmap[retag]
+                    element.name = new_tag
+                else:
+                    element.name = tag
 
         return str(soup.body)
 
