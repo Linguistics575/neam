@@ -89,3 +89,7 @@ class WikiRetaggerTest(TestCase):
         output = self.retagger.run('<body><placeName><sic>Queen</sic> Elizabeth</placeName></body>')
         self.assertEqual('<body><persName><sic>Queen</sic> Elizabeth</persName></body>', output)
 
+    def test_it_preserves_the_case_of_a_non_match(self):
+        output = self.retagger.run('<body><placeName>afdsakjfas</placeName></body>')
+        self.assertEqual('<body><placeName>afdsakjfas</placeName></body>', output)
+

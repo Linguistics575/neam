@@ -94,7 +94,7 @@ class TestPossessionFixer(unittest.TestCase):
 class TestTagExpander(unittest.TestCase):
     def setUp(self):
         tags = ['persName', 'placeName']
-        words = ['the', 'Mrs.', 'Dr.']
+        words = ['the', 'Mrs.', 'Dr.', 'SS']
 
         self.processor = TagExpander(tags=tags, words=words)
 
@@ -110,4 +110,11 @@ class TestTagExpander(unittest.TestCase):
         output = self.processor.run('The <placeName>Grand Canyon</placeName>')
         self.assertEqual('<placeName>The Grand Canyon</placeName>', output)
 
+    def test_it_only_merges_full_words(self):
+        output = self.processor.run('address <persName>John</persName>')
+        self.assertEqual('address <persName>John</persName>', output)
+
+    def test_it_expands_in_the_middle_of_a_line(self):
+        output = self.processor.run('both stopping at the <placeName>Holland</placeName>')
+        self.assertEqual('both stopping at <placeName>the Holland</placeName>', output)
 
