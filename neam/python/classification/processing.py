@@ -130,18 +130,19 @@ class TagExpander(NEAMProcessor):
     def __init__(self, tags, words):
         self._tags = tags
         self._words = words
-        self._pattern = re.compile('((?:(?:{})\s+)+)<({})>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
+        self._pattern = re.compile('(^|\s)((?:(?:{})\s+)+)<({})>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
 
     def run(self, text):
         return self._pattern.sub(self._format, text)
 
     def _format(self, match_object):
-        words = match_object.group(1).strip()
-        tag = match_object.group(2)
+        prefix = match_object.group(1)
+        words = match_object.group(2).strip()
+        tag = match_object.group(3)
 
         words = self._SPACE_PATTERN.sub(' ', words)
 
-        return '<{}>{} '.format(tag, words)
+        return '{}<{}>{} '.format(prefix, tag, words)
 
 
 __all__ = ['ASCIIifier', 'PageReplacer', 'SicReplacer', 'SpaceNormalizer', 'Pipeline', 'PossessionFixer', 'TagExpander']
