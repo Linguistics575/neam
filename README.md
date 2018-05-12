@@ -8,14 +8,23 @@ which are given below.
 ### Java dependencies
 NEAM is built on [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/download.html), which
 in turn requires Java 1.8 installed and `JAVA_HOME` properly configured. It should point to the
-folder that contains `bin/java`. On Linux, this can be set with the following command:
+folder that contains `bin/java`. You can follow the appropriate platform-specific instructions
+to set this up. You do not need to install Stanford CoreNLP yourself; NEAM will do this for you
+the first time you call it.
+
+#### Windows
+Right click on `My Computer`, and navigate to `Properties -> Advanced System Settings ->
+Environment Variables`. Click on `New...`, and type `JAVA_HOME` as the `Variable name`, and the
+path to your java installation directory (e.g. `C:\Program Files\Java\jdk1.8.0_141`) as the
+`Variable value`.
+
+#### Linux
+Run the following command from the terminal:
 
 `export JAVA_HOME="/path/to/java"`
 
 If you're going to be running NEAM a lot, it is recommended to put this command inside your
-`.bashrc` file (or the comparable file if you're using a shell other than Bash). You do not
-need to install Stanford CoreNLP yourself; NEAM will do this for you the first time you call
-it.
+`.bashrc` file (or the comparable file if you're using a shell other than Bash).
 
 ### Python dependencies
 NEAM uses [pip](https://pypi.python.org/pypi/pip) to manage its Python dependencies. If it is
