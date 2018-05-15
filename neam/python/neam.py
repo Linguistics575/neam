@@ -6,24 +6,48 @@ def main():
     args = load_args()
 
     pipeline = Pipeline([
-        # Preprocessing
+        #################
+        # Preprocessing #
+        #################
+
+        # Get rid of any weird characters from the input
         ASCIIifier(),
 
-        # Tagging
+        ###########
+        # Tagging #
+        ###########
+        
+        # Run Stanford CoreNLP to tag named entities and dates
         load_classifier(args),
+        # Tag all of the titles using a custom trained MaxEnt classifier
         TitleAnnotator(),
+        # Replace page numbers with <pb> tags
         PageReplacer(),
+        # Replace sic marks with <sic> tags
         SicReplacer(),
 
-        # Tag postprocessing
+        ######################
+        # Tag postprocessing #
+        ######################
+
+        # Clean up Stanford's tagging of dates
         DateProcessor(),
+        # Move any of the following titles inside tags that occur directly to their right
         TagExpander(tags=['persName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
+        # Add in the <p> and <div> tags
         JournalShaper('EBA', args.year),
+        # Check tags against Wikipedia
         WikiRetagger(tags=['placeName', 'orgName']),
+        # Set the ref attribute of named entity tags
         RefAnnotator(),
 
-        # Formatting
+        ##############
+        # Formatting #
+        ##############
+
+        # Adjust the spacing to get rid of weird newlines and repeated spaces
         SpaceNormalizer(),
+        # Format the XML into a standardized layout
         Beautifier()
     ])
 
