@@ -6,3 +6,4 @@ numpy==1.13.3
 lxml
 pywikibot
 requests
+peewee
