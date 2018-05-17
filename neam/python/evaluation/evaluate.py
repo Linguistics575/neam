@@ -398,7 +398,7 @@ def main():
     with open(goldfile, 'r', encoding='utf-8', errors="surrogateescape") as gf:
         gold = BeautifulSoup(gf, 'html.parser')
     # clean and tokenize the data
-    test = tokenize(clean_test(test.body))
+    test = tokenize(clean_gold(test.body))
     gold = tokenize(clean_gold(gold.body))
     # ensure the data are formatted for evaluation
     if check(test, gold):
