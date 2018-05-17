@@ -45,8 +45,10 @@ dependencies by typing
 
 `pip3 install -r requirements.txt`
 
-on the command line / Terminal from the NEAM root directory. If you do not have root privileges, 
-see "Usage" below for running NEAM in a virtual environment.
+on the command line / Powershell (on Windows) or Terminal (on Linux / OS X) from the NEAM root 
+directory. If you are on Windows, be sure to run the command line / Powershell as an 
+administrator. If you do not have root privileges, see "Usage" below for running NEAM in a 
+virtual environment.
 
 ## Usage
 
