@@ -1,5 +1,10 @@
 # NEAM: Named-Entity Automatic Markup on Historical Texts
 
+## Downloading NEAM
+For instructions on how to download NEAM, please refer to 
+[this page](https://help.github.com/articles/cloning-a-repository/) for instructions for your
+particular OS. Instructions are available both for Github Desktop and through Terminal.
+
 ## Requirements
 NEAM is written in Python and Java, and requires both to be installed. (For Python, it requires
 Python 3, and the Java version must be 1.8.) There are also language-specific dependencies,
@@ -20,7 +25,7 @@ can follow the appropriate platform-specific instructions below to set this up. 
 to install Stanford CoreNLP yourself; NEAM will do this for you the first time you call it.
 
 #### Linux
-Run the following command from the terminal:
+Start Terminal by typing `Ctrl + Alt + T` and run the following command:
 
 `export JAVA_HOME="/path/to/java"`
 
@@ -29,7 +34,8 @@ If you're going to be running NEAM a lot, it is recommended to put this command 
 
 #### Mac OS X
 Your configuration should work without any changes, but if it does not work you can follow the
-instructions in the Linux section above.
+instructions in the Linux section above. To access Terminal on Mac, type `CMD + Space` to open 
+Spotlight, then type "terminal" and hit Enter.
 
 ### Python dependencies
 Navigate to [this page](https://www.python.org/downloads/) and download and install Python 3. 
