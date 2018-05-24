@@ -45,7 +45,7 @@ def taskstatus(task_id):
     """
     # Find the task
     # TODO: handle invalid queries
-    task = my_task.AsyncResult(task_id)
+    task = neam_annotate.AsyncResult(task_id)
 
     # Set the values on a response object
     response = { 'state': task.state }
