@@ -25,7 +25,7 @@ lib_dir = os.path.join(java_dir, 'lib')
 
 
 def boot_java():
-    print("Starting Java.")
+    print("Starting Java.", file=sys.stderr)
     src_path = os.path.join(java_dir, 'neam')
     jar_paths = [os.path.join(lib_dir, jar) for jar in JARS]
     load_paths = [src_path] + jar_paths
