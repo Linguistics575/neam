@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1 class="center-align">NEAM</h1>
+    <div class="row box z-depth-2">
+        <form id="annotation-form" class="col s12" method="POST" action="/annotate" enctype="multipart/form-data">
+            <div class="row">
+                <div class="file-field input-field col s12">
+                    <div class="btn waves-effect waves-light">
+                        <span>File</span>
+                        <input name="file" type="file" required />
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input placeholder="Upload a file to be annotated" class="file-path" type="text" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input name="email" type="email" />
+                    <label for="email">Email</label>
+                    <span class="helper-text">If you don't want to wait, we'll send the annotation here when it's finished.</span>
+                </div>
+            </div>
+            <div class="row">
+                <button id="submit-button" class="btn waves-effect waves-light right" type="submit">
+                    Annotate
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+        <div class="progress" id="progress-bar">
+            <div class="indeterminate"></div>
+        </div>
+        <p class="right-align red-text" id="info-text">Hold tight; we're working on your annotation!</p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}
+

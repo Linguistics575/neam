@@ -1,7 +1,5 @@
-from neam.python.java import clms, java
+from neam.python.java import clms, java, boot_java
 from neam.python.classification.processing import NEAMProcessor
-
-NEAMClassifier = clms.neam.classify.NEAMClassifier
 
 CORE_NLP_DEFAULTS = {
   'annotators': 'tokenize,ssplit,pos,lemma,ner,entitymentions',
@@ -25,6 +23,7 @@ DEFAULT_TAGS = {
 
 class Classifier(NEAMProcessor):
     def __init__(self, options = None, tags = None):
+        boot_java()
         props = CORE_NLP_DEFAULTS.copy()
         if options:
             props.update(options)
@@ -33,7 +32,7 @@ class Classifier(NEAMProcessor):
         tags = tags or DEFAULT_TAGS
         tags = self._convert_props(tags)
 
-        self._classifier = NEAMClassifier(core_nlp_props, tags)
+        self._classifier = clms.neam.classify.NEAMClassifier(core_nlp_props, tags)
         self._preprocesses = []
         self._postprocesses = []
 

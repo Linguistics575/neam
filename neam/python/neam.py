@@ -2,9 +2,7 @@ import argparse
 from neam.python.classification import *
 
 
-def main():
-    args = load_args()
-
+def main(input_file, model=None, year=1900):
     pipeline = Pipeline([
         #################
         # Preprocessing #
@@ -18,7 +16,7 @@ def main():
         ###########
         
         # Run Stanford CoreNLP to tag named entities and dates
-        load_classifier(args),
+        load_classifier(model),
         # Tag all of the titles using a custom trained MaxEnt classifier
         TitleAnnotator(),
         # Replace page numbers with <pb> tags
@@ -35,7 +33,7 @@ def main():
         # Move any of the following titles inside tags that occur directly to their right
         TagExpander(tags=['persName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
         # Add in the <p> and <div> tags
-        JournalShaper('EBA', args.year),
+        JournalShaper('EBA', year),
         # Check tags against Wikipedia
         WikiRetagger(tags=['placeName', 'orgName']),
         # Set the ref attribute of named entity tags
@@ -51,16 +49,14 @@ def main():
         Beautifier()
     ])
 
-    with open(args.file, encoding="utf-8") as input_file:
-        text = ''.join(input_file)
-
-    print(pipeline.run(text))
+    text = ''.join(input_file)
+    return pipeline.run(text)
 
 
-def load_classifier(args):
+def load_classifier(model):
     props = {}
-    if args.model:
-        props["ner.model"] = args.model
+    if model:
+        props["ner.model"] = model
     return Classifier(props)
 
 
@@ -74,5 +70,7 @@ def load_args():
 
 
 if __name__ == '__main__':
-    main()
+    args = load_args()
+    with open(args.file, encoding="utf-8") as input_file:
+        print(main(input_file, args.model))
 

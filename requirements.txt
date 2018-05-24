@@ -4,6 +4,8 @@ nltk==3.2.5
 numpy==1.13.3
 
 flask
+celery
+redis
 lxml
 pywikibot
 requests
