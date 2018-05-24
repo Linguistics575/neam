@@ -1,23 +1,22 @@
 import sqlite3
 import csv
-connection = sqlite3.connect("test.db")
-sql_command = "CREATE TABLE MyTable(placeholder VARCHAR(20));"
-cursor = connection.cursor()
-#cursor.execute(sql_command)
+import sys
+from database import *
+import database
 
-with open ('test.csv', 'r') as f:
-    reader = csv.reader(f)
-    columns = next(reader) 
-    for i in columns:
-    	print(i)
-    query = 'insert into MyTable({0}) values ({1})'
-    query = query.format(','.join(columns), ','.join('?' * len(columns)))
-    for data in reader:
-        cursor.execute(query, data)
-    cursor.commit()
+import_csv = open(sys.argv[1], 'r')
+result = {}
+with import_csv as f:
+    reader = csv.reader(import_csv)
+    for row in reader:
+        result.setdefault(row[0],[])
+        result[row[0]].append([])
+        for value in row[1:]:
+            result[row[0]][-1].append(value)
+print(result)
 
-cursor.execute("SELECT * FROM alias") 
-print("fetchall:")
-result = cursor.fetchall() 
-for r in result:
-    print(r)
+for reference, list_of_entries  in result.items():
+    for entry in list_of_entries:
+        Lemma(name=entry[0], tag=entry[1]).save()
+        ent = Lemma.get(name=entry[0])
+        ent.link_to(reference)
