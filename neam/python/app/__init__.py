@@ -52,7 +52,7 @@ def neam_annotate(self, filename, email):
 
     self.update_state(state='PROGRESS', meta={})
     with open(os.path.join(app.config['UPLOAD_FOLDER'], filename)) as f:
-        from neam.python.neam import main as neam
+        from neam.python.neam import neam
         with open(os.path.join(app.config['UPLOAD_FOLDER'], new_file), 'w') as out:
             out.write(neam(f))
 

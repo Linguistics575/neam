@@ -17,6 +17,7 @@ if [[ $FIRST_TIME ]]; then
     pip3 install -r requirements.txt
 fi
 
+export PYWIKIBOT2_NO_USER_CONFIG=1
 PYTHONIOENCODING=utf-8 python3 "$DIR/neam.py" $@
 deactivate
 

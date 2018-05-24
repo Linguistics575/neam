@@ -2,7 +2,10 @@ import argparse
 from neam.python.classification import *
 
 
-def main(input_file, model=None, year=1900):
+def neam(input_file, model=None, year=1900, expand=None, retag=None):
+    expand = expand or ['persName']
+    retag = retag or ['placeName', 'orgName']
+
     pipeline = Pipeline([
         #################
         # Preprocessing #
@@ -31,11 +34,11 @@ def main(input_file, model=None, year=1900):
         # Clean up Stanford's tagging of dates
         DateProcessor(),
         # Move any of the following titles inside tags that occur directly to their right
-        TagExpander(tags=['persName'], words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
+        TagExpander(tags=expand, words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
         # Add in the <p> and <div> tags
         JournalShaper('EBA', year),
         # Check tags against Wikipedia
-        WikiRetagger(tags=['placeName', 'orgName']),
+        WikiRetagger(tags=retag),
         # Set the ref attribute of named entity tags
         RefAnnotator(),
 
@@ -66,11 +69,17 @@ def load_args():
     parser.add_argument('--model', help='A NER model to override the default')
     parser.add_argument('--gs', help='The gold standard')
     parser.add_argument('--year', help='The year of the first journal entry', type=int, default=1900)
+    parser.add_argument('--expand', help='The tags NEAM should expand into titles', default='')
+    parser.add_argument('--retag', help='The tags NEAM should consult with Wikipedia on', default='')
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
     args = load_args()
     with open(args.file, encoding="utf-8") as input_file:
-        print(main(input_file, args.model))
+        print(neam(input_file, args.model, args.year, args.expand.split(','), args.retag.split(',')))
+
+
+if __name__ == '__main__':
+    main()
 
