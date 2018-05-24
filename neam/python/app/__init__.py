@@ -32,8 +32,6 @@ app.config['UPLOAD_FOLDER'] = '/tmp/'
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
-from neam.python.app import routes
-
 celery = make_celery(app)
 
 
@@ -57,4 +55,7 @@ def neam_annotate(self, filename, email):
             out.write(neam(f))
 
     return {'result': new_file}
+
+
+from neam.python.app import routes
 
