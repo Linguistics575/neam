@@ -29,8 +29,8 @@ def make_celery(app):
 # Initialize the application and configure it
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = '/tmp/'
-app.config['CELERY_BROKER_URL'] = os.environ['REDIS_URL'] or 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = os.environ['REDIS_URL'] or 'redis://localhost:6379/0'
+app.config['CELERY_BROKER_URL'] = os.environ['REDIS_URL'] if 'REDIS_URL' in os.environ else 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = os.environ['REDIS_URL'] if 'REDIS_URL' in os.environ else 'redis://localhost:6379/0'
 
 celery = make_celery(app)
 
