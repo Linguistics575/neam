@@ -1,3 +1,7 @@
+import re
+
+from bs4 import BeautifulSoup
+
 from neam.python.java import clms, java, boot_java
 from neam.python.classification.processing import NEAMProcessor
 
@@ -30,11 +34,12 @@ class Classifier(NEAMProcessor):
         core_nlp_props = self._convert_props(props)
 
         tags = tags or DEFAULT_TAGS
-        tags = self._convert_props(tags)
+        java_tags = self._convert_props(tags)
 
-        self._classifier = clms.neam.classify.NEAMClassifier(core_nlp_props, tags)
-        self._preprocesses = []
-        self._postprocesses = []
+        self._target_tags = set(tags.values())
+        self._classifier = clms.neam.classify.NEAMClassifier(core_nlp_props, java_tags)
+
+        super().__init__(BeautifulSoup, str)
 
     def _convert_props(self, props):
         """
@@ -57,16 +62,15 @@ class Classifier(NEAMProcessor):
         return self.classify(text)
 
     def classify(self, text):
-        for preprocess in self._preprocesses:
-            text = preprocess(text)
+        return self._classifier.classify(re.sub('\n', ' ', text))
 
-        text = self._classifier.classify(text)
+    def run(self, soup):
+        for tag in soup.find_all(['title', 'p']):
+            text = self.classify(str(tag))
+            tag.replace_with(BeautifulSoup(text, 'html.parser'))
 
-        for postprocess in self._postprocesses:
-            text = postprocess(text)
+        output = str(soup)
+        for tag in self._target_tags:
+            output = output.replace(tag.lower(), tag)
 
-        return text
-
-    def run(self, text):
-        return self.classify(text)
-
+        return output

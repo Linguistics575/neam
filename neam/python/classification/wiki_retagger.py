@@ -29,6 +29,7 @@ class WikiRetagger(NEAMProcessor):
         """
         self._tags = tags or self._DEFAULT_TAGS
         self._tagmap = tagmap or self._DEFAULT_TAGMAP
+        super().__init__(str, str)
 
     def run(self, text):
         """

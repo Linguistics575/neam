@@ -18,7 +18,7 @@ class Beautifier(NEAMProcessor):
         """
         self._tab = tab
         self._parser = parser
-        self._ignore_tags = ignore or ['p', 'pb']
+        self._ignore_tags = ignore or ['p', 'pb', 'title']
 
     def run(self, text):
         soup = BeautifulSoup(text, self._parser).contents[0]

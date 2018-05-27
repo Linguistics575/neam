@@ -1,5 +1,6 @@
 import argparse
 from neam.python.classification import *
+from bs4 import BeautifulSoup
 
 
 def neam(input_file, model=None, year=1900, expand=None, retag=None):
@@ -12,20 +13,22 @@ def neam(input_file, model=None, year=1900, expand=None, retag=None):
         #################
 
         # Get rid of any weird characters from the input
-        ASCIIifier(),
+        # ASCIIifier(),
 
         ###########
         # Tagging #
         ###########
         
-        # Run Stanford CoreNLP to tag named entities and dates
-        load_classifier(model),
         # Tag all of the titles using a custom trained MaxEnt classifier
         TitleAnnotator(),
+        # Add in the <p> and <div> tags
+        JournalShaper('EBA', year),
         # Replace page numbers with <pb> tags
         PageReplacer(),
-        # Replace sic marks with <sic> tags
+        # # Replace sic marks with <sic> tags
         SicReplacer(),
+        # Run Stanford CoreNLP to tag named entities and dates
+        load_classifier(model),
 
         ######################
         # Tag postprocessing #
@@ -35,8 +38,6 @@ def neam(input_file, model=None, year=1900, expand=None, retag=None):
         DateProcessor(),
         # Move any of the following titles inside tags that occur directly to their right
         TagExpander(tags=expand, words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
-        # Add in the <p> and <div> tags
-        JournalShaper('EBA', year),
         # Check tags against Wikipedia
         WikiRetagger(tags=retag),
         # Set the ref attribute of named entity tags
@@ -52,8 +53,8 @@ def neam(input_file, model=None, year=1900, expand=None, retag=None):
         Beautifier()
     ])
 
-    text = ''.join(input_file)
-    return pipeline.run(text)
+    text = '<body>' + ''.join(input_file) + '</body>'
+    return pipeline.run(BeautifulSoup(text, 'html.parser'))
 
 
 def load_classifier(model):

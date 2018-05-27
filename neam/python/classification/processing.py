@@ -19,6 +19,10 @@ class NEAMProcessor(ABC):
     A NEAMProcessor should implement a method called "run", which accepts an
     str and returns an str.
     """
+    def __init__(self, from_type, to_type):
+        self._from = from_type
+        self._to = to_type
+
     def run(self, text):
         raise NotImplemented
 
@@ -47,7 +51,6 @@ class Pipeline:
         :return: The output from the final processor
         """
         for process in self._processes:
-            process.run(data)
             try:
                 data = process.run(data)
             except AttributeError:
@@ -83,31 +86,55 @@ class ASCIIifier(NEAMProcessor):
         :type map: dict of str: str
         """
         self._map = map or self._CHARMAP
+        super().__init__(str, str)
 
     def run(self, text):
         return multi_sub(self._map, text)
 
 
 class PageReplacer(NEAMProcessor):
+    def __init__(self):
+        super().__init__(BeautifulSoup, BeautifulSoup)
+
     """
     Replaces page numbers with the corresponding TEI tag
     """
-    def run(self, text):
-        return re.sub('page (\d+)', '<pb n="\g<1>"/>', text, flags=re.I)
+    def run(self, soup):
+        for p in soup.body.find_all('p'):
+            p.replace_with(
+                BeautifulSoup(
+                    re.sub('page (\d+):?', '<pb n="\g<1>"/>', str(p), flags=re.I),
+                    'html.parser'
+                ).p
+            )
+        return soup
 
 
 class SicReplacer(NEAMProcessor):
+    def __init__(self):
+        super().__init__(BeautifulSoup, BeautifulSoup)
+
     """
     Replaces [sic] items with the corresponding TEI tag
     """
-    def run(self, text):
-        return re.sub('\[sic; (\S+)\]', '<sic>\g<1></sic>', text)
+    def run(self, soup):
+        for p in soup.body.find_all('p'):
+            p.replace_with(
+                BeautifulSoup(
+                    re.sub('\[sic; (\S+)\]', '<sic>\g<1></sic>', str(p)),
+                    'html.parser'
+                ).p
+            )
+        return soup
 
 
 class SpaceNormalizer(NEAMProcessor):
     """
     Normalizes spaces in XML text
     """
+    def __init__(self):
+        super().__init__(str, str)
+
     def run(self, text):
         text = re.sub('\n', ' ', text)
         text = re.sub('(<[^/>]*>) +', '\g<1>', text)
@@ -119,6 +146,9 @@ class PossessionFixer(NEAMProcessor):
     """
     Moves possession markers inside tags
     """
+    def __init__(self):
+        super().__init__(str, str)
+
     def run(self, text):
         text =re.sub("(<[^/>]+>[^<]+)(<[^>]+>)'s", "\g<1>'s\g<2>", text)
         return re.sub("(?<!')(<[^/>]+>[^<]*s)(<[^>]+>)'", "\g<1>'\g<2>", text)
@@ -131,6 +161,7 @@ class TagExpander(NEAMProcessor):
         self._tags = tags
         self._words = words
         self._pattern = re.compile('(^|\s)((?:(?:{})\s+)+)<({})>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
+        super().__init__(str, str)
 
     def run(self, text):
         return self._pattern.sub(self._format, text)

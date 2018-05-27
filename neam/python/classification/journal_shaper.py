@@ -1,5 +1,7 @@
 import re
 from neam.python.classification.processing import NEAMProcessor
+from bs4 import BeautifulSoup, NavigableString, Tag
+
 
 class JournalShaper(NEAMProcessor):
     """
@@ -26,6 +28,7 @@ class JournalShaper(NEAMProcessor):
         self._year = year
         self._month = month
         self._day = day
+        super().__init__(BeautifulSoup, BeautifulSoup)
 
     @property
     def formatted_year(self):
@@ -51,20 +54,29 @@ class JournalShaper(NEAMProcessor):
         """
         return self._pad(self._day, 2)
 
-    def run(self, text):
-        text = re.sub('(<title>)(.*?)(</title>)(.*?)(?=<title>)', self._format, text, flags=re.S)
-        text = re.sub('(?<!<p>)(<title>)(.*?)(</title>)(.*?)$', self._format, text, flags=re.S)
-        return '<body>' + text + '</body>'
+    def run(self, soup):
+        title = soup.new_tag('title')
+        body = soup.new_tag('body')
+        for child in soup.body.contents[:]:
+            if isinstance(child, Tag):
+                title = child.extract()
+            else:
+                div = soup.new_tag('div')
+                div['type'] = 'Entry'
+                div['xml:id'] = self.extract_code(title)
+                p = soup.new_tag('p')
+                p.append(NavigableString(str(child)))
+                date = re.search
+                div.append(title)
+                div.append(p)
+                body.append(div)
+        soup.body.replace_with(body)
+        return soup
 
-    def _format(self, match_data):
-        open_tag  = match_data.group(1)
-        title     = match_data.group(2)
-        close_tag = match_data.group(3)
-        body      = match_data.group(4)
-
-        code = self._make_code(re.search('({})(?:\.|[a-z]+)? +(\d+)(?:{})?\.?(?: +(\d+)\.?)?'.format('|'.join(self._MONTHS), '|'.join(self._ORDINALS)), title.lower()))
-
-        return '<div xml:id="' + code + '" type="Entry"><p>' + open_tag + title + close_tag + '</p><p>' + body + '</p></div>'
+    def extract_code(self, title):
+        if title.string:
+            return self._make_code(re.search('({})(?:\.|[a-z]+)? +(\d+)(?:{})?\.?(?: +(\d+)\.?)?'.format('|'.join(self._MONTHS), '|'.join(self._ORDINALS)), title.string.lower()))
+        return self._author + '???'
 
     def _make_code(self, match_data):
         """
