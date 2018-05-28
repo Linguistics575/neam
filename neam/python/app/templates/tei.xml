@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TEI SYSTEM "{filename}">
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title>{title}</title>
+                <author>
+                    <persName ref="???">{author}</persName>
+                </author>
+                <editor>
+                    <persName ref="???">{editor}</persName>
+                </editor>
+                <respStmt>
+                    <resp>EBA Interns</resp>
+                    <persName ref="???">{intern}</persName>
+                </respStmt>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>{publisher}</publisher>
+                <address>
+                    <addrLine>{publisher_address}</addrLine>
+                </address>
+                <availability>
+                    <license target="http://creativecommons.org/licenses/by-nc/4.0/">
+                        This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+                    </license>
+                </availability>
+                <date when="{end_date}"> {start_date}-{end_date} </date>.
+                <distributor>The Emma B. Andrews Diary Project</distributor>
+            </publicationStmt>
+            <notesStmt>
+                <note>{notes}</notes>
+            </notesStmt>
+            <sourceDesc>
+                <bibl>
+                    <title>{title}</title>
+                    <author>
+                        <persName ref="???">{author}</persName>
+                    </author>
+                    <orgName ref="???">{source_organization}</orgName>
+                    <address>
+                        <addrLine>{source_address}</addrLine>
+                    </address>
+                </bibl>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>{description}</p>
+            </projectDesc>
+        </encodingDesc>
+        <profileDesc>
+            <particDesc>
+                <listPerson>
+                    <person role="editor" sex="???">
+                        <persName ref="???">???</persName>
+                        <affiliation>{editor}</affiliation>
+                        <occupation>???</occupation>
+                    </person>
+                </listPerson>
+            </particDesc>
+        </profileDesc>
+    </teiHeader>
+    <text>
+        {body}
+    </text>
+</TEI>
+
