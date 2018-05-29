@@ -11,18 +11,20 @@
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
     </head>
     <body>
-        <nav>
-            <div class="nav-wrapper">
-                <a href="/" class="brand-logo">NEAM</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                    <li><a href="/about">About</a></li>
-                </ul>
-            </div>
-        </nav>
+        <header>
+            <nav>
+                <div class="nav-wrapper">
+                    <a href="/" class="brand-logo">NEAM</a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li><a href="/about">About</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
 
-        <div class="container">
+        <main class="container">
             {% block content %}{% endblock %}
-        </div>
+        </main>
 
         <footer class="page-footer">
             <div class="container">
