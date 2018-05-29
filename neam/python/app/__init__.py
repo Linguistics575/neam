@@ -1,6 +1,14 @@
+import os
+import re
+
 from flask import Flask
 from celery import Celery
-import os
+from jinja2 import Template
+
+from neam.python.neam import neam
+
+
+FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def make_celery(app):
@@ -36,23 +44,36 @@ celery = make_celery(app)
 
 
 @celery.task(bind=True)
-def neam_annotate(self, filename, email):
+def neam_annotate(self, filename, form):
     """
     Annotates a document with NEAM
 
     TODO: Ensure the file exists
 
     :param filename: The name of the file to annotate
-    :param email: An email to send the annotated file to
+    :param email: The data provided to the HTML form
     :return: A response object that has as its result the name of the annotated file
     """
     new_file = filename + '.xml'
+    tab_width = 2
+    tab_str = '  '
+    tab = tab_str * tab_width
 
     self.update_state(state='PROGRESS', meta={})
+
+    # Annotate the file
     with open(os.path.join(app.config['UPLOAD_FOLDER'], filename)) as f:
-        from neam.python.neam import neam
+        form['body'] = tab_str + re.sub('\n', '\n' + tab_str, neam(f))
+
+    # Embed the file inside a TEI document
+    with open(os.path.join(FILE_DIR, 'templates', 'tei.xml')) as template_file:
         with open(os.path.join(app.config['UPLOAD_FOLDER'], new_file), 'w') as out:
-            out.write(neam(f))
+            template = Template(''.join(template_file.readlines()))
+            out.write(template.render(**form))
+
+    if form['email']:
+        # TODO: implement email functionality
+        pass
 
     return {'result': new_file}
 

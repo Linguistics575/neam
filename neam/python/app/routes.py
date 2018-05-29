@@ -37,12 +37,17 @@ def annotate():
     # Grab the data from the request
     email = request.form['email']
     f = request.files['file']
+    form = {**request.form}
+    for k in form:
+        if isinstance(form[k], list):
+            form[k] = '\n'.join(form[k])
+    form['filename'] = f.filename
 
     # Save the file so the worker can find it
     f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
 
     # Fire off a worker to annotate the file
-    t = neam_annotate.delay(f.filename, email)
+    t = neam_annotate.delay(f.filename, form)
 
     return jsonify({}), 202, {'Location': url_for('taskstatus', task_id=t.id)}
 

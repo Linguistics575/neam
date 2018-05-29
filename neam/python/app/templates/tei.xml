@@ -6,58 +6,58 @@
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title>{{title}}</title>
+                <title>{{title or '???' }}</title>
                 <author>
-                    <persName ref="???">{{author}}</persName>
+                    <persName ref="???">{{author or '???' }}</persName>
                 </author>
                 <editor>
-                    <persName ref="???">{{editor}}</persName>
+                    <persName ref="???">{{editor or '???' }}</persName>
                 </editor>
                 <respStmt>
                     <resp>EBA Interns</resp>
-                    <persName ref="???">{{intern}}</persName>
+                    <persName ref="???">{{intern or '???' }}</persName>
                 </respStmt>
             </titleStmt>
             <publicationStmt>
-                <publisher>{{publisher}}</publisher>
+                <publisher>{{publisher or '???' }}</publisher>
                 <address>
-                    <addrLine>{{publisher_address}}</addrLine>
+                    <addrLine>{{publisher_address or '???' }}</addrLine>
                 </address>
                 <availability>
                     <license target="http://creativecommons.org/licenses/by-nc/4.0/">
                         This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
                     </license>
                 </availability>
-                <date when="{{end_date}}"> {{start_date}}-{{end_date}} </date>.
+                <date when="{{end_date or '???' }}"> {{start_date or '???' }}-{{end_date or '???' }} </date>.
                 <distributor>The Emma B. Andrews Diary Project</distributor>
             </publicationStmt>
             <notesStmt>
-                <note>{{notes}}</notes>
+                <note>{{notes or '???' }}</notes>
             </notesStmt>
             <sourceDesc>
                 <bibl>
-                    <title>{{title}}</title>
+                    <title>{{title or '???' }}</title>
                     <author>
-                        <persName ref="???">{{author}}</persName>
+                        <persName ref="???">{{author or '???' }}</persName>
                     </author>
-                    <orgName ref="???">{{source_organization}}</orgName>
+                    <orgName ref="???">{{source_organization or '???' }}</orgName>
                     <address>
-                        <addrLine>{{source_address}}</addrLine>
+                        <addrLine>{{source_address or '???' }}</addrLine>
                     </address>
                 </bibl>
             </sourceDesc>
         </fileDesc>
         <encodingDesc>
             <projectDesc>
-                <p>{{description}}</p>
+                <p>{{description or '???' }}</p>
             </projectDesc>
         </encodingDesc>
         <profileDesc>
             <particDesc>
                 <listPerson>
                     <person role="editor" sex="???">
-                        <persName ref="???">???</persName>
-                        <affiliation>{{editor}}</affiliation>
+                        <persName ref="???">{{ editor or '???' }}</persName>
+                        <affiliation>???</affiliation>
                         <occupation>???</occupation>
                     </person>
                 </listPerson>
@@ -65,7 +65,7 @@
         </profileDesc>
     </teiHeader>
     <text>
-        {{body}}
+{{body or '???' }}
     </text>
 </TEI>
 
