@@ -89,3 +89,7 @@ strong {
     display: flex;
 }
 
+.description {
+    font-style: italic;
+}
+
