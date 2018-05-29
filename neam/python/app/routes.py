@@ -1,7 +1,12 @@
 import os
 
-from flask import render_template, request, send_from_directory, jsonify, url_for
+from flask import render_template, request, send_from_directory, jsonify, url_for, Markup
+from markdown import markdown
+
 from neam.python.app import app, celery, neam_annotate
+
+
+FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 @app.route('/')
@@ -9,6 +14,14 @@ from neam.python.app import app, celery, neam_annotate
 def index():
     """ Routes the user to the index page """
     return render_template('index.html', title='NEAM Annotate')
+
+
+@app.route('/about')
+def about():
+    """ Routes the user to the about page """
+    with open(os.path.join(FILE_DIR, '..', '..', '..', 'docs', 'about.md')) as one_pager:
+        content = '\n'.join(one_pager.readlines())
+    return render_template('about.html', title='About NEAM', content=Markup(markdown(content)))
 
 
 @app.route('/annotate', methods=['POST'])
