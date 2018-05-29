@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css" />
         <!-- Materialize icons -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <!-- Font Awesome icons -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         <!-- App-specific stylesheet -->
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
     </head>
@@ -16,6 +18,14 @@
                 <div class="nav-wrapper">
                     <a href="/" class="brand-logo">NEAM</a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li>
+                            <a href="https://github.com/Linguistics575/neam">
+                            <span class="icon">
+                                <i class="fa fa-lg fa-github"></i>
+                            </span>
+                            </a>
+                        </li>
+                        <li><a href="/">Annotator</a></li>
                         <li><a href="/about">About</a></li>
                     </ul>
                 </div>
@@ -28,7 +38,7 @@
 
         <footer class="page-footer">
             <div class="container">
-                <h5>Footer Content</h5>
+                <h4>Footer Content</h4>
             </div>
             <div class="footer-copyright">
                 <div class="container">
