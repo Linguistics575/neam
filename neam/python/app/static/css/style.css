@@ -11,6 +11,16 @@ body {
     font-family: "Open Sans", Helvetica, Arial, Verdana, sans-serif;
 }
 
+input:not(.browser-default):focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label {
+    color: #558097 !important;
+}
+
+input:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid #558097 !important;
+    -webkit-box-shadow: 0 1px 0 0 #558097 !important;
+    box-shadow: 0 1px 0 0 #558097 !important;
+}
+
 h1 {
     font-family: "encode_sans_normalbold", sans-serif;
 }
