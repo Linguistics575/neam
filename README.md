@@ -25,7 +25,9 @@ can follow the appropriate platform-specific instructions below to set this up. 
 to install Stanford CoreNLP yourself; NEAM will do this for you the first time you call it.
 
 #### Linux
-Start Terminal by typing `Ctrl + Alt + T` and run the following command:
+Open a new terminal. In Ubuntu, this can be done by typing `Ctrl + Alt + T`. If that doesn't
+work, you'll need to find out how to open the terminal for your particular Linux distribution.
+Once you have a terminal instance, run the following command:
 
 `export JAVA_HOME="/path/to/java"`
 
