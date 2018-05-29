@@ -45,7 +45,7 @@ def clean_gold(soup):
     for tag in tags:
         tag_name = re.search(r'\w+', tag)
         if tag_name.group(0) not in KEEP_TAGS:
-            str_soup = re.sub(tag, '', str_soup)
+            str_soup = re.sub(re.escape(tag), '', str_soup)
     return str_soup
 
 
