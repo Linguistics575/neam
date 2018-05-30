@@ -55,21 +55,28 @@ class JournalShaper(NEAMProcessor):
         return self._pad(self._day, 2)
 
     def run(self, soup):
-        title = soup.new_tag('title')
+        title = None
         body = soup.new_tag('body')
         for child in soup.body.contents[:]:
             if isinstance(child, Tag):
                 title = child.extract()
             else:
-                div = soup.new_tag('div')
-                div['type'] = 'Entry'
-                div['xml:id'] = self.extract_code(title)
-                p = soup.new_tag('p')
-                p.append(NavigableString(str(child)))
-                date = re.search
-                div.append(title)
-                div.append(p)
-                body.append(div)
+                text = NavigableString(str(child))
+
+                if title:
+                    div = soup.new_tag('div')
+                    div['type'] = 'Entry'
+                    div['xml:id'] = self.extract_code(title)
+
+                    p = soup.new_tag('p')
+                    p.append(text)
+
+                    div.append(title)
+                    div.append(p)
+                    body.append(div)
+                else:
+                    body.append(text)
+
         soup.body.replace_with(body)
         return soup
 

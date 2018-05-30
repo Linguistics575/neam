@@ -9,7 +9,7 @@ call the pipeline's *run* method. The pipeline will pipe the data given to
 """
 import re
 from abc import ABC
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 from neam.python.util import multi_sub
 
 class NEAMProcessor(ABC):
@@ -100,6 +100,15 @@ class PageReplacer(NEAMProcessor):
     Replaces page numbers with the corresponding TEI tag
     """
     def run(self, soup):
+        for string in soup.body.children:
+            if isinstance(string, str):
+                string.replace_with(
+                    BeautifulSoup(
+                        re.sub('page (\d+):?', '<pb n="\g<1>"/>', str(string), flags=re.I),
+                        'html.parser'
+                    )
+                )
+
         for p in soup.body.find_all('p'):
             p.replace_with(
                 BeautifulSoup(
