@@ -1,1 +1,125 @@
-!function(t){var e={};function o(n){if(e[n])return e[n].exports;var r=e[n]={i:n,l:!1,exports:{}};return t[n].call(r.exports,r,r.exports,o),r.l=!0,r.exports}o.m=t,o.c=e,o.d=function(t,e,n){o.o(t,e)||Object.defineProperty(t,e,{configurable:!1,enumerable:!0,get:n})},o.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return o.d(e,"a",e),e},o.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},o.p="/",o(o.s=0)}([function(t,e,o){o(1),t.exports=o(2)},function(t,e){$(function(){var t={progress_bar:$("#progress-bar"),button:$("#submit-button"),text:$("#info-text")};t.progress_bar.hide(),t.text.hide(),$("#annotation-form").ajaxForm({success:function(e,o,n){status_url=n.getResponseHeader("Location"),function t(e,o){$.getJSON(e,function(n){var r=n.state;"PENDING"==r||"PROGRESS"==r?setTimeout(function(){t(e,o)},2e3):(window.location="/download/"+n.result,o.progress_bar.hide(),o.text.hide(),o.button.removeClass("disabled"))})}(status_url,t)},beforeSubmit:function(){t.progress_bar.show(),t.text.show(),t.button.addClass("disabled")}})})},function(t,e){}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "/";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(1);
+module.exports = __webpack_require__(2);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+$(function () {
+  var elements = {
+    progress_bar: $('#progress-bar'),
+    button: $('#submit-button'),
+    text: $('#info-text')
+  };
+
+  elements['progress_bar'].hide();
+  elements['text'].hide();
+
+  $('#annotation-form').ajaxForm({
+    success: function success(data, textStatus, request) {
+      status_url = request.getResponseHeader('Location');
+      update_progress(status_url, elements);
+    },
+    beforeSubmit: function beforeSubmit() {
+      elements['progress_bar'].show();
+      elements['text'].show();
+      elements['button'].addClass('disabled');
+    }
+  });
+});
+
+function update_progress(status_url, elements) {
+  $.getJSON(status_url, function (data) {
+    var state = data['state'];
+
+    if (state == 'PENDING' || state == 'PROGRESS') {
+      setTimeout(function () {
+        update_progress(status_url, elements);
+      }, 2000);
+    } else {
+      window.location = '/download/' + data['result'];
+      elements['progress_bar'].hide();
+      elements['text'].hide();
+      elements['button'].removeClass('disabled');
+    }
+  });
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ })
+/******/ ]);

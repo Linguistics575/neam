@@ -2,79 +2,89 @@
 
 {% block content %}
     <h1 class="center-align">NEAM Annotator</h1>
-    <p class="description">Upload a file and add as much meta information as you can.</p>
-    <div class="row box">
+    <div class="row">
         <form id="annotation-form" class="col s12" method="POST" action="/annotate" enctype="multipart/form-data">
-            <div class="row">
-                <div class="file-field input-field col s12">
-                    <div class="btn waves-effect waves-light">
-                        <span>File</span>
-                        <input name="file" type="file" required />
+            <div class="card-panel">
+                <p class="description">Upload a file and add as much meta information as you can.</p>
+                <div class="row">
+                    <div class="file-field input-field col s12">
+                        <div class="btn waves-effect waves-light">
+                            <span>File</span>
+                            <input name="file" type="file" required />
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input placeholder="Upload a file to be annotated" class="file-path" type="text" />
+                        </div>
                     </div>
-                    <div class="file-path-wrapper">
-                        <input placeholder="Upload a file to be annotated" class="file-path" type="text" />
+                </div>
+            </div>
+            <div class="card-panel">
+                <p class="description">Information about the text</p>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input name="title" id="title" type="text" />
+                        <label for="title">Title of the text</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input name="author" id="author-name" type="text" />
+                        <label for="author-name">Author of the text</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s3">
+                        <input name="start_date" id="start-date" type="number" />
+                        <label for="start-date">Year started</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <input name="end_date" id="end-date" type="number" />
+                        <label for="end-date">Year completed</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input name="source_organization" id="source-organization" type="text" />
+                        <label for="source-organization">Source organization</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input name="source_address" id="source-address" type="text" />
+                        <label for="source-address">Source organization address</label>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="input-field col s6">
-                    <input name="title" id="title" type="text" />
-                    <label for="title">Title of the text</label>
+            <div class="card-panel">
+                <p class="description">Information about the annotator(s)</p>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input name="editor" id="editor" type="text" />
+                        <label for="editor">Editor</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input name="publisher" id="publisher" type="text" />
+                        <label for="publisher">Publishing organization</label>
+                    </div>
                 </div>
-                <div class="input-field col s6">
-                    <input name="author" id="author-name" type="text" />
-                    <label for="author-name">Author of the text</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s3">
-                    <input name="start_date" id="start-date" type="number" />
-                    <label for="start-date">Year started</label>
-                </div>
-                <div class="input-field col s3">
-                    <input name="end_date" id="end-date" type="number" />
-                    <label for="end-date">Year completed</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="source_organization" id="source-organization" type="text" />
-                    <label for="source-organization">Source organization</label>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input name="publisher_address" id="publisher-address" type="text" />
+                        <label for="publisher-address">Publisher address</label>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="source_address" id="source-address" type="text" />
-                    <label for="source-address">Source organization address</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s6">
-                    <input name="editor" id="editor" type="text" />
-                    <label for="editor">Editor</label>
-                </div>
-                <div class="input-field col s6">
-                    <input name="publisher" id="publisher" type="text" />
-                    <label for="publisher">Publishing organization</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input name="publisher_address" id="publisher-address" type="text" />
-                    <label for="publisher-address">Publisher address</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <textarea name="notes" id="notes" class="materialize-textarea"></textarea>
-                    <label for="notes">Notes</label>
+            <div class="card-panel">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea name="notes" id="notes" class="materialize-textarea"></textarea>
+                        <label for="notes">Notes</label>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12">
                     <input name="email" id="email" type="email" />
                     <label for="email">Email</label>
-                    <span class="helper-text">If you don't want to wait, we'll send the annotation here when it's finished.</span>
+                    <span class="helper-text">If you don't want to wait, we'll send the annotation here when it's finished. We promise not to tell anyone else your email &mdash; we hate spam as much as you do!</span>
                 </div>
             </div>
             <div class="row">

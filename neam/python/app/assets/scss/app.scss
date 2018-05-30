@@ -47,13 +47,11 @@ strong {
     font-weight: bolder;
 }
 
-.box {
-    @extend .z-depth-2;
-    padding: 2rem;
-    background-color: white;
-
-    h2:first-child {
-        margin-top: .5rem;
+.card-panel {
+    h2, p {
+        &:first-child {
+            margin-top: .5rem;
+        }
     }
 }
 
@@ -75,5 +73,6 @@ strong {
 
 .description {
     font-style: italic;
+    color: $primary-color;
 }
 
