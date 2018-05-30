@@ -65,7 +65,9 @@ class Classifier(NEAMProcessor):
         return self._classifier.classify(re.sub('\n', ' ', text))
 
     def run(self, soup):
-        for tag in soup.find_all(['title', 'p']):
+        for tag in soup.find_all('p'):
+            if tag.title:
+                tag = tag.title
             text = self.classify(str(tag))
             tag.replace_with(BeautifulSoup(text, 'html.parser'))
 

@@ -104,9 +104,9 @@ class PageReplacer(NEAMProcessor):
             if isinstance(string, str):
                 string.replace_with(
                     BeautifulSoup(
-                        re.sub('page (\d+):?', '<pb n="\g<1>"/>', str(string), flags=re.I),
+                        re.sub('page (\d+):?', '<pb n="\g<1>"/>', '<foo>' + str(string) + '</foo>', flags=re.I),
                         'html.parser'
-                    )
+                    ).foo
                 )
 
         for p in soup.body.find_all('p'):
