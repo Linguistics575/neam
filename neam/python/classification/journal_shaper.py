@@ -68,11 +68,13 @@ class JournalShaper(NEAMProcessor):
                     div['type'] = 'Entry'
                     div['xml:id'] = self.extract_code(title)
 
-                    p = soup.new_tag('p')
-                    p.append(text)
+                    p_text = soup.new_tag('p')
+                    p_text.append(text)
+                    p_title = soup.new_tag('p')
+                    p_title.append(title)
 
-                    div.append(title)
-                    div.append(p)
+                    div.append(p_title)
+                    div.append(p_text)
                     body.append(div)
                 else:
                     body.append(text)
