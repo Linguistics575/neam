@@ -102,12 +102,11 @@ class PageReplacer(NEAMProcessor):
     def run(self, soup):
         for string in soup.body.children:
             if isinstance(string, str):
-                string.replace_with(
-                    BeautifulSoup(
-                        re.sub('page (\d+):?', '<pb n="\g<1>"/>', '<foo>' + str(string) + '</foo>', flags=re.I),
-                        'html.parser'
-                    ).foo
-                )
+                new_tag = BeautifulSoup(
+                              re.sub('page (\d+):?', '<pb n="\g<1>"/>', '<foo>' + str(string) + '</foo>', flags=re.I),
+                              'html.parser'
+                          ).foo
+                string.replace_with(new_tag.contents[0])
 
         for p in soup.body.find_all('p'):
             p.replace_with(
