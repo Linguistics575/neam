@@ -37,7 +37,7 @@ def neam(input_file, model=None, year=1900, expand=None, retag=None):
         # Clean up Stanford's tagging of dates
         DateProcessor(),
         # Move any of the following titles inside tags that occur directly to their right
-        TagExpander(tags=expand, words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge']),
+        TagExpander(tags=expand, words=['the', 'Mr.', 'Mrs.', 'Ms.', 'Miss', 'Lady', 'Dr.', 'Maj.', 'Col.', 'Capt.', 'Rev', 'SS', 'S.S.', 'Contessa', 'Judge', 'Mlle.', 'M.']),
         # Check tags against Wikipedia
         WikiRetagger(tags=retag),
         # Set the ref attribute of named entity tags
