@@ -168,11 +168,13 @@ class TagExpander(NEAMProcessor):
     def __init__(self, tags, words):
         self._tags = tags
         self._words = words
-        self._pattern = re.compile('(^|\s)((?:(?:{})\s+)+)<({}[^>]*)>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
+        self._pattern = re.compile('(^|\s)((?:(?:{})\s+)+)<((?:{})[^>]*)>'.format('|'.join(words), '|'.join(tags)), flags=re.I)
         super().__init__(str, str)
 
     def run(self, text):
-        return self._pattern.sub(self._format, text)
+        if ''.join(self._tags):
+            return self._pattern.sub(self._format, text)
+        return text
 
     def _format(self, match_object):
         prefix = match_object.group(1)
