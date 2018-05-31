@@ -55,15 +55,13 @@ def neam_annotate(self, filename, form):
     :return: A response object that has as its result the name of the annotated file
     """
     new_file = filename + '.xml'
-    tab_width = 2
-    tab_str = '  '
-    tab = tab_str * tab_width
+    tab = '\t' * 2
 
     self.update_state(state='PROGRESS', meta={})
 
     # Annotate the file
     with open(os.path.join(app.config['UPLOAD_FOLDER'], filename)) as f:
-        form['body'] = tab_str + re.sub('\n', '\n' + tab_str, neam(f))
+        form['body'] = tab + re.sub('\n', '\n' + tab, neam(f))
 
     # Embed the file inside a TEI document
     with open(os.path.join(FILE_DIR, 'templates', 'tei.xml')) as template_file:
