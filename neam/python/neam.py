@@ -25,7 +25,7 @@ def neam(input_file, model=None, year=1900, expand=None, retag=None):
         JournalShaper('EBA', year),
         # Replace page numbers with <pb> tags
         PageReplacer(),
-        # # Replace sic marks with <sic> tags
+        # Replace sic marks with <sic> tags
         SicReplacer(),
         # Run Stanford CoreNLP to tag named entities and dates
         load_classifier(model),
