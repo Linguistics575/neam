@@ -35,21 +35,22 @@ For information on the technical aspects of NEAM, please refer to our
 Following are the last-reported evaluation results (in %).
 
 MUC-Style Evaluation Results
+
 |         | Precision | Recall | F-measure |
-|--------:|:---------:|:------:|:---------:|
+|   ---:  | :-------: | :----: | :-------: |
 |orgname  | 35.71     | 10.56  | 16.30     |
 |persname | 81.98     | 85.16  | 83.54     |
 |placename| 80.55     | 60.37  | 69.02     |
 |Total    | 80.49     | 69.68  | 74.70     |
 
 CoNLL-Style Evaluation Results
+
 |         | Precision | Recall | F-measure |
-|--------:|:---------:|:------:|:---------:|
+|   ---:  | :-------: | :----: | :-------: |
 |orgname  |  9.52     |  2.82  |  4.35     |
 |persname | 72.73     | 75.55  | 74.11     |
 |placename| 76.06     | 57.01  | 65.17     |
 |Total    | 72.74     | 62.97  | 67.50     |
-
 
 ## Forthcoming
 This repository contains code for a web interface for NEAM to allow for easier usage by
