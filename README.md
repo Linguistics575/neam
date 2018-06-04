@@ -58,3 +58,7 @@ participants of the Emma B. Andrews Diary Project. While the code itself is func
 at present there is no server available on which to run it. Plese refer to our
 [technical documentation](https://github.com/Linguistics575/neam/wiki/Technical-Documentation)
 for information on the web interface and needed server.
+
+## License
+NEAM is licenced under the GNU General Public License 3.0. For more information on 
+this licence, please refer to `LICENSE.txt` in the NEAM root directory.
