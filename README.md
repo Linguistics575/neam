@@ -32,25 +32,24 @@ For information on the technical aspects of NEAM, please refer to our
 [technical documentation](https://github.com/Linguistics575/neam/wiki/Technical-Documentation)
 
 ## Evaluation
-Following are the last-reported evaluation results (in %).
 
 MUC-Style Evaluation Results
 
 |         | Precision | Recall | F-measure |
 |   ---:  | :-------: | :----: | :-------: |
-|orgname  | 35.71     | 10.56  | 16.30     |
-|persname | 81.98     | 85.16  | 83.54     |
-|placename| 80.55     | 60.37  | 69.02     |
-|Total    | 80.49     | 69.68  | 74.70     |
+|orgname  | .3571     | .1056  | .1630     |
+|persname | .8198     | .8516  | .8354     |
+|placename| .8055     | .6037  | .6902     |
+|Total    | .8049     | .6968  | .7470     |
 
 CoNLL-Style Evaluation Results
 
 |         | Precision | Recall | F-measure |
 |   ---:  | :-------: | :----: | :-------: |
-|orgname  |  9.52     |  2.82  |  4.35     |
-|persname | 72.73     | 75.55  | 74.11     |
-|placename| 76.06     | 57.01  | 65.17     |
-|Total    | 72.74     | 62.97  | 67.50     |
+|orgname  | .0952     | .0282  | .0435     |
+|persname | .7273     | .7555  | .7411     |
+|placename| .7606     | .5701  | .6517     |
+|Total    | .7274     | .6297  | .6750     |
 
 ## Forthcoming
 This repository contains code for a web interface for NEAM to allow for easier usage by
