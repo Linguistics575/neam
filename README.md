@@ -33,6 +33,14 @@ For information on the technical aspects of NEAM, please refer to our
 
 ## Evaluation
 
+Evaluation is carried out as a comparison of tags between the system output and and a gold
+standard. In MUC-style evaluation a maximum of two points is given to a tag in the output: one 
+for correct tag and one for correct span. In CoNLL-style evaluation a maximum of one point is
+given for each tag, and it is given only if it has both the correct tag and the correct span.
+The accuracy results reported below are for Volume 1 of the Emma B. Andrews diaries. A detailed 
+description of the technical information of evaluation can be found in our
+[technical documentation](https://github.com/Linguistics575/neam/wiki/Technical-Documentation).
+
 MUC-Style Evaluation Results
 
 |         | Precision | Recall | F-measure |
