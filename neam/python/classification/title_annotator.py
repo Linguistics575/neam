@@ -1,7 +1,7 @@
 import os
 import re
 from neam.python.classification.processing import NEAMProcessor
-from neam.python.classification.processing.title_classifier import TitleClassifier
+from neam.python.classification.title_classifier import TitleClassifier
 from bs4 import BeautifulSoup, NavigableString
 
 
